@@ -39,8 +39,7 @@ public class GaussianElimination {
 			for (int j = k + 1; j <= n; j++) {
 				sum += a[k - 1][j - 1] * x[j - 1];
 			}
-			x[k - 1] = (b[k - 1] - sum) / a[k - 1][k - 1]; // x_k (k = n, n-1,
-															// …, 2, 1 )
+			x[k - 1] = (b[k - 1] - sum) / a[k - 1][k - 1]; // x_k (k = n, n-1, …, 2, 1 )
 
 		}
 		// x の表示
