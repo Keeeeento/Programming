@@ -1,6 +1,6 @@
 package gaussianElimination;
 
-public class GaussianElimination {
+public class GaussianElimination2 {
 	public static void main(String[] args) {
 
 		int n = 5; // 行列のサイズ
@@ -48,7 +48,7 @@ public class GaussianElimination {
 		for (int i = 0; i < n; i++) {
 			System.out.printf("%f ", x[i]);
 		}
-
+		
 		System.out.println();
 
 		// b の表示
