@@ -1,18 +1,9 @@
 package myBLAS;
 
-class UndifinedMatrixOperation extends Exception {
-	public UndifinedMatrixOperation() {
-	}
-
-	public static void main(String[] args) {
-		System.out.println("演算が定義できません");
-	}
-}
-
-public class Calc {
+public class Calc2 {
 
 	// ベクトルのコンソール出力
-	public static void printVec(double x[]) {
+	public static void print(double x[]) {
 		for (int i = 0; i < x.length; i++) {
 			System.out.printf("%.10f ", x[i]);
 		}
@@ -20,7 +11,7 @@ public class Calc {
 	}
 
 	// 行列のコンソール出力
-	public static void printMat(double a[][]) {
+	public static void print(double a[][]) {
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
 				System.out.printf("%.10f ", a[i][j]);
@@ -39,7 +30,7 @@ public class Calc {
 	}
 
 	// 2つのベクトルの加算
-	public static double[] addVec(double x[], double y[]) {
+	public static double[] add(double x[], double y[]) {
 		for (int i = 0; i < x.length; i++) {
 			x[i] += y[i];
 		}
@@ -47,8 +38,8 @@ public class Calc {
 	}
 
 	// 2つのベクトルの減算
-	public static double[] subVec(double[] x, double[] y) {
-		return addVec(x, scalarMultiple(-1, y));
+	public static double[] sub(double[] x, double[] y) {
+		return add(x, scalarMultiple(-1, y));
 	}
 
 	// 2つのベクトルの内積
@@ -74,7 +65,7 @@ public class Calc {
 
 	// 行列Aとベクトルx,bに対して,残差 Ax-b
 	public static double[] residual(double[][] a, double[] x, double[] b) {
-		return subVec(matVec(a, x), b);
+		return sub(matVec(a, x), b);
 	}
 
 	// 行列同士の演算
@@ -88,9 +79,9 @@ public class Calc {
 		}
 		return a;
 	}
-	
+
 	// 2つの行列の加算
-	public static double[][] addMat(double[][] a, double[][] b) {
+	public static double[][] add(double[][] a, double[][] b) {
 
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
@@ -101,12 +92,12 @@ public class Calc {
 	}
 
 	// 2つの行列の減算
-	public static double[][] subMat(double[][] a, double[][] b) {
-		return addMat(a, scalarMultiple(-1, b));
+	public static double[][] sub(double[][] a, double[][] b) {
+		return add(a, scalarMultiple(-1, b));
 	}
 
 	// 2つの行列の積
-	public static double[][] multipleMat(double[][] a, double[][] b) {
+	public static double[][] multiple(double[][] a, double[][] b) {
 		double[][] c = new double[a.length][b[0].length];
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {

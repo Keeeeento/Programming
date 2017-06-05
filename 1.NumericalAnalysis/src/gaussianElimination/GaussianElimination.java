@@ -32,15 +32,19 @@ public class GaussianElimination {
 			}
 		}
 
-		// 後退代入過程
-		double sum = 0;
-		// x[n - 1] = b[n - 1] / a[n - 1][n - 1]; // n番目の場合(x_n)
+		// 後退代入前にxにbを保存
+		for(int i =0;i<n;i++){
+
+				x[i] = b[i];
+
+		}
+
+		// 後退代入過程　xに上書き
 		for (int k = n; k >= 1; k--) {
 			for (int j = k + 1; j <= n; j++) {
-				sum += a[k - 1][j - 1] * x[j - 1];
+				x[k - 1] += -a[k - 1][j - 1] * x[j - 1];
 			}
-			x[k - 1] = (b[k - 1] - sum) / a[k - 1][k - 1]; // x_k (k = n, n-1,
-															// …, 2, 1 )
+			x[k - 1] /= a[k - 1][k - 1];
 
 		}
 		// x の表示
