@@ -1,6 +1,6 @@
 package gaussianElimination;
 
-import myBLAS.Calc;
+import myBLAS.Calculation;
 
 public class GaussianElimination5 {
 	public static void main(String[] args) {
@@ -8,9 +8,10 @@ public class GaussianElimination5 {
 		int n = 5; // 行列のサイズ
 		double[][] a = new double[n][n];
 		double[] xAsterisk = new double[n];
+		double[] xAsterisk1 = new double[n];
 		double[] bAsterisk = new double[n];
+		double[] bAsterisk1 = new double[n];
 		double[] bDelta = new double[n];
-		double alpha = 0.0;
 
 		// 行列 A_{n,n} = a の作成
 		for (int i = 1; i <= n; i++) {
@@ -25,54 +26,30 @@ public class GaussianElimination5 {
 		}
 
 		// ベクトルbAsterisk の作成
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				bAsterisk[i] += a[i][j] * xAsterisk[j];
-			}
-		}
+		bAsterisk = Calculation.multiple(a, xAsterisk);
 
 		// ベクトルbDelta の作成
 		for (int i = 0; i < n; i++) {
 			if (i == 0) {
-				bDelta[i] = 10e-2 * bAsterisk[i];
+				bDelta[i] = 10e-3 * bAsterisk[i];
 			} else {
 				bDelta[i] = 0.0;
 			}
 		}
 
-		// 誤差を含めたベクトルbAsteriskの更新
-		for (int i = 0; i < n; i++) {
-			bAsterisk[i] += bDelta[i];
-		}
+		// ベクトルbAsterisk1の作成
+		bAsterisk1 = Calculation.add(bAsterisk, bDelta);
 
-		// 前進消去過程
-		for (int k = 1; k < n; k++) {
-			for (int i = k + 1; i <= n; i++) {
-				alpha = a[i - 1][k - 1] / a[k - 1][k - 1]; // alphaの更新
+		// 前半の表示
+		System.out.println("|Δb|∞ / |b*|∞ = ");
+		System.out.println(Calculation.infinityNorm(bDelta) / Calculation.infinityNorm(bAsterisk));
 
-				for (int j = k + 1; j <= n; j++) {
-					a[i - 1][j - 1] += -alpha * a[k - 1][j - 1]; // A_{i,j}
-																	// 成分の更新
-				}
-				bAsterisk[i - 1] += -alpha * bAsterisk[k - 1]; // b_i 成分の更新
-			}
-		}
+		// ガウスの消去法
+		xAsterisk1 = Calculation.gaussianElimination(a, bAsterisk1);
 
-		// 後退代入過程
-		double sum = 0;
-		double[] xAsterisk1 = new double[n];
-		for (int k = n; k >= 1; k--) {
-			for (int j = k + 1; j <= n; j++) {
-				sum += a[k - 1][j - 1] * xAsterisk1[j - 1];
-			}
-			xAsterisk1[k - 1] = (bAsterisk[k - 1] - sum) / a[k - 1][k - 1];
-
-		}
-
-		System.out.println("|Δb|∞ / |b*|∞ = " + (Calc.vecNormInf(bDelta) / Calc.vecNormInf(bAsterisk)));
-		System.out.println();
-		System.out.println("|x₁*-x*|∞ / |x*|∞ = "
-				+ Calc.vecNormInf(Calc.subVec(xAsterisk1, xAsterisk)) / Calc.vecNormInf(xAsterisk));
+		// 後半の表示
+		System.out.println("|x₁*-x*|∞ / |x*|∞ = ");
+		System.out.println(Calculation.infinityNorm(Calculation.sub(xAsterisk1, xAsterisk)) / Calculation.infinityNorm(xAsterisk));
 
 	}
 }

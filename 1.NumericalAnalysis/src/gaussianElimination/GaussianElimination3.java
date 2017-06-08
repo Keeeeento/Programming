@@ -1,5 +1,7 @@
 package gaussianElimination;
 
+import myBLAS.Calculation;
+
 public class GaussianElimination3 {
 	public static void main(String[] args) {
 
@@ -20,20 +22,12 @@ public class GaussianElimination3 {
 			xAsterisk[i] = 1;
 		}
 
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				bAsterisk[i] += a[i][j] * xAsterisk[j];
-			}
-		}
-
-
+		// bAsterisk の計算
+		bAsterisk = Calculation.multiple(a, xAsterisk);
 
 		// bAsterisk の表示
-		System.out.println("b = ");
-		for (int i = 0; i < n; i++) {
-			System.out.printf("%f ", bAsterisk[i]);
-		}
+		System.out.println("bAsterisk = ");
+		Calculation.print(bAsterisk);
 
 
 
