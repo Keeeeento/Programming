@@ -8,7 +8,7 @@ public class NewtonsMethod1Error {
 		// つまり誤差は10^(-12)である
 
 		double x0 = 2; // 初期値(initial)
-		double eps = 10E-12; // マシンイプシロン
+		double eps = 1.0E-12; // マシンイプシロン
 		double x = x0; // 近似解(approximate)
 		int count = 0; // 反復回数
 
