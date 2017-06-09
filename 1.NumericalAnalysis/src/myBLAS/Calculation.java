@@ -122,6 +122,25 @@ public class Calculation {
 
 	}
 
+	// 指数表記
+	public static void printe(double[] x, int n) {
+		switch (n) {
+		case 3:
+			for (int i = 0; i < x.length; i++) {
+				System.out.printf("%.3e ", x[i]);
+			}
+			System.out.println();
+			break;
+		default:
+			for (int i = 0; i < x.length; i++) {
+				System.out.printf("%.16e ", x[i]);
+			}
+			System.out.println();
+			break;
+		}
+
+	}
+
 	// 行列のコンソール出力
 	// 指定が特にない場合は小数点以下10桁表示
 	public static void print(double a[][]) {
@@ -285,6 +304,45 @@ public class Calculation {
 		}
 	}
 
+	// 指数表記
+	public static void printe(double[][] a, int n) {
+		switch (n) {
+		case 3:
+			for (int i = 0; i < a.length; i++) {
+				for (int j = 0; j < a[0].length; j++) {
+					System.out.printf("%.3e ", a[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+			break;
+
+		default:
+			for (int i = 0; i < a.length; i++) {
+				for (int j = 0; j < a[0].length; j++) {
+					System.out.printf("%.16e ", a[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+			break;
+		}
+	}
+
+	// // 行列の作成
+	// public static void create(double[][] a) {
+	// for (int i = 0; i < a.length; i++) {
+	// for (int j = 0; j < a[0].length; j++) {
+	// a[i][j] += ijRelation(i,j);
+	// }
+	// }
+	// }
+	//
+	// // 行列の作成に必要なメソッド
+	// public static double ijRelation(double i, double j) {
+	// return i + j;
+	// }
+
 	// ベクトルに関する演算
 	// ベクトルxをc倍する
 	public static double[] scalarMultiple(double c, double x[]) {
@@ -333,8 +391,7 @@ public class Calculation {
 		return sub(multiple(a, x), b);
 	}
 
-	// 行列同士の演算
-	// 自作
+	// 行列の演算
 	// 行列のc倍
 	public static double[][] scalarMultiple(double c, double a[][]) {
 		for (int i = 0; i < a.length; i++) {
@@ -343,6 +400,17 @@ public class Calculation {
 			}
 		}
 		return a;
+	}
+
+	// 行列の転置
+	public static double[][] transpose(double[][] a) {
+		double[][] b = new double[a[0].length][a.length];
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				b[i][j] = a[j][i];
+			}
+		}
+		return b;
 	}
 
 	// 2つの行列の加算
@@ -404,9 +472,31 @@ public class Calculation {
 		return norm;
 	}
 
+	// 行列ノルム
+	// 1ノルム
+	public static double manhattanNorm(double[][] a) {
+		double norm = 0.0;
+		double sum = 0.0;
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum += Math.abs(a[i][j]);
+			}
+			if (sum > norm) {
+				norm = sum;
+			}
+			sum = 0;
+		}
+		return norm;
+	}
+
+	// 無限大ノルム
+	public static double infinityNorm(double[][] a) {
+		return manhattanNorm(transpose(a));
+	}
+
 	// ガウス消去法
 	// 前進消去
-	public static void forwardEliminationWithoutSubstitutingZero(double[][] a, double[] b) {
+	public static void forwardEliminationNonZero(double[][] a, double[] b) {
 		int n = a.length;
 		double alpha = 0.0;
 		for (int k = 0; k < n - 1; k++) {

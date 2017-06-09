@@ -82,13 +82,25 @@ public class Calc {
 	// 行列のc倍
 	public static double[][] scalarMultiple(double c, double a[][]) {
 		for (int i = 0; i < a.length; i++) {
-			for(int j=0;j<a[0].length;j++) {
-				a[i][j] *=c;
+			for (int j = 0; j < a[0].length; j++) {
+				a[i][j] *= c;
 			}
 		}
 		return a;
 	}
-	
+
+	// 自作
+	// 行列の転置
+	public static double[][] transpose(double[][] a) {
+		double[][] b = new double[a[0].length][a.length];
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				b[i][j] = a[j][i];
+			}
+		}
+		return b;
+	}
+
 	// 2つの行列の加算
 	public static double[][] addMat(double[][] a, double[][] b) {
 
@@ -148,6 +160,26 @@ public class Calc {
 		return norm;
 	}
 
+	// 行列ノルム
+	// 1ノルム
+	public static double matNorm1(double[][] a) {
+		double norm = 0.0;
+		double sum = 0.0;
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum += Math.abs(a[i][j]);
+			}
+			if (sum > norm) {
+				norm = sum;
+			}
+			sum = 0;
+		}
+		return norm;
+	}
 
+	// 無限大ノルム
+	public static double matNormInf(double[][] a) {
+		return matNorm1(transpose(a));
+	}
 
 }
