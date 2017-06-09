@@ -24,10 +24,10 @@ public class GaussianElimination {
 		Calculation.forwardElimination(a, b);
 
 		System.out.println("A = ");
-		Calculation.printf(a, 3);
+		Calculation.printf(a, 16);
 
 		System.out.println("b = ");
-		Calculation.printf(b, 3);
+		Calculation.printf(b, 16);
 
 	}
 }
