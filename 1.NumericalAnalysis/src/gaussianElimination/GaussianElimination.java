@@ -3,6 +3,17 @@ package gaussianElimination;
 import myBLAS.Calculation;
 
 public class GaussianElimination {
+
+	// A =
+	// 5.000e-01 3.333e-01 2.500e-01 2.000e-01 1.667e-01
+	// 0.000e+00 2.778e-02 3.333e-02 3.333e-02 3.175e-02
+	// 0.000e+00 0.000e+00 1.667e-03 2.857e-03 3.571e-03
+	// 0.000e+00 0.000e+00 0.000e+00 1.020e-04 2.268e-04
+	// 0.000e+00 0.000e+00 0.000e+00 0.000e+00 6.299e-06
+	//
+	// b =
+	// 1.000e+00 3.333e-01 1.000e-01 2.857e-02 7.937e-03
+
 	public static void main(String[] args) {
 
 		int n = 5; // 行列のサイズ
@@ -24,10 +35,10 @@ public class GaussianElimination {
 		Calculation.forwardElimination(a, b);
 
 		System.out.println("A = ");
-		Calculation.printf(a, 16);
+		Calculation.printe(a, 3);
 
 		System.out.println("b = ");
-		Calculation.printf(b, 16);
+		Calculation.printe(b, 3);
 
 	}
 }

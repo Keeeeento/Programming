@@ -3,6 +3,10 @@ package gaussianElimination;
 import myBLAS.Calculation;
 
 public class GaussianElimination5 {
+
+	// |Δb|∞ / |b*|∞ = 9.901e-03
+	// |x₁*-x*|∞ / |x*|∞ = 2.192e+02
+
 	public static void main(String[] args) {
 
 		int n = 5; // 行列のサイズ
@@ -42,14 +46,15 @@ public class GaussianElimination5 {
 
 		// 前半の表示
 		System.out.println("|Δb|∞ / |b*|∞ = ");
-		System.out.println(Calculation.infinityNorm(bDelta) / Calculation.infinityNorm(bAsterisk));
+		System.out.printf("%.3e\n", Calculation.infinityNorm(bDelta) / Calculation.infinityNorm(bAsterisk));
 
 		// ガウスの消去法
 		xAsterisk1 = Calculation.gaussianElimination(a, bAsterisk1);
 
 		// 後半の表示
 		System.out.println("|x₁*-x*|∞ / |x*|∞ = ");
-		System.out.println(Calculation.infinityNorm(Calculation.sub(xAsterisk1, xAsterisk)) / Calculation.infinityNorm(xAsterisk));
+		System.out.printf("%.3e\n",
+				Calculation.infinityNorm(Calculation.sub(xAsterisk1, xAsterisk)) / Calculation.infinityNorm(xAsterisk));
 
 	}
 }

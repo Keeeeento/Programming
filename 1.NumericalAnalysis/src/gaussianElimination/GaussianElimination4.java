@@ -3,6 +3,10 @@ package gaussianElimination;
 import myBLAS.Calculation;
 
 public class GaussianElimination4 {
+
+	// xAsterisk1 =
+	// 3.412e-01 3.145e-01 2.711e-01 2.261e-01 6.456e+00
+
 	public static void main(String[] args) {
 
 		int n = 5; // 行列のサイズ
@@ -44,6 +48,6 @@ public class GaussianElimination4 {
 		xAsterisk1 = Calculation.backsubstitution(a, bAsterisk1);
 
 		System.out.println("xAsterisk1 = ");
-		Calculation.print(xAsterisk1);
+		Calculation.printe(xAsterisk1, 3);
 	}
 }
