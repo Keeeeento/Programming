@@ -1,6 +1,6 @@
 package luDecomposition;
 
-import myBLAS.Calc;
+import myBLAS.Calculation;
 
 public class LUDecomposition {
 	public static void main(String[] args) {
@@ -26,30 +26,34 @@ public class LUDecomposition {
 
 			}
 		}
+		System.out.println("A = ");
+		Calculation.printf(a, 0);
 
+		// 行列Lの対角成分の完成
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				l[i][j] = (i == j) ? 1 : 0;
+			}
+		}
 		// 前進消去過程（並行して行列Lの作成）
 		for (int k = 0; k < n - 1; k++) {
 			for (int i = k + 1; i < n; i++) {
 				alpha = a[i][k] / a[k][k];
-				for (int j = k + 1; j < n; j++) {
+				l[i][k] = alpha;
+				for (int j = k; j < n; j++) {
 					a[i][j] += -alpha * a[k][j];
 				}
-				l[i][k] = alpha;
+				// for (int j = 0; j < n; j++) {
+				// if (i > j) {
+				// l[i][j] = alpha;
+				// }
+				// }
+
 			}
 		}
 
-		// Lの完成
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i == j) {
-					l[i][j] = 1;
-				}
-			}
-		}
-		
-		
-		
-		Calc.printMat(Calc.multipleMat(a, l));
+		// Calculation.printe(Calculation.multiple(a, l), 3);
+		Calculation.printe(l, 3);
 	}
 
 }
