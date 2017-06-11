@@ -14,6 +14,12 @@ public class Calculation {
 	// 桁数指定付き(小数点以下1~16桁まで)
 	public static void printf(double[] x, int n) {
 		switch (n) {
+		case 0:
+			for (int i = 0; i < x.length; i++) {
+				System.out.printf("%d ", (int) x[i]);
+			}
+			System.out.println();
+			break;
 		case 1:
 			for (int i = 0; i < x.length; i++) {
 				System.out.printf("%.1f ", x[i]);
@@ -156,6 +162,15 @@ public class Calculation {
 	// 桁数指定付き(小数点以下1~16桁まで)
 	public static void printf(double a[][], int n) {
 		switch (n) {
+		case 0:
+			for (int i = 0; i < a.length; i++) {
+				for (int j = 0; j < a[0].length; j++) {
+					System.out.printf("%d ", (int) a[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+			break;
 		case 1:
 			for (int i = 0; i < a.length; i++) {
 				for (int j = 0; j < a[0].length; j++) {
@@ -496,6 +511,24 @@ public class Calculation {
 
 	// ガウス消去法
 	// 前進消去
+	public static void forwardElimination(double[][] a, double[] b) {
+		int n = a.length;
+		double alpha = 0.0;
+		for (int k = 0; k < n - 1; k++) {
+			for (int i = k + 1; i < n; i++) {
+				alpha = a[i][k] / a[k][k];
+				for (int j = k; j < n; j++) {
+					a[i][j] -= alpha * a[k][j];
+					if (i > j) {
+						a[i][j] = 0.0;
+					}
+				}
+				b[i] -= alpha * b[k];
+			}
+		}
+	}
+
+	// 前進消去(0とみなす)
 	public static void forwardEliminationNonZero(double[][] a, double[] b) {
 		int n = a.length;
 		double alpha = 0.0;
@@ -503,33 +536,11 @@ public class Calculation {
 			for (int i = k + 1; i < n; i++) {
 				alpha = a[i][k] / a[k][k];
 				for (int j = k + 1; j < n; j++) {
-					a[i][j] += -alpha * a[k][j];
+					a[i][j] -= alpha * a[k][j];
 				}
-				b[i] += -alpha * b[k];
+				b[i] -= alpha * b[k];
 			}
 		}
-	}
-
-	public static void forwardElimination(double[][] a, double[] b) {
-		int n = a.length;
-		double alpha = 0.0;
-		for (int k = 0; k < n - 1; k++) {
-			for (int i = k + 1; i < n; i++) {
-				alpha = a[i][k] / a[k][k];
-				for (int j = k + 1; j < n; j++) {
-					a[i][j] += -alpha * a[k][j];
-				}
-				b[i] += -alpha * b[k];
-			}
-		}
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i > j) {
-					a[i][j] = 0;
-				}
-			}
-		}
-
 	}
 
 	// 後退代入
@@ -550,5 +561,9 @@ public class Calculation {
 		forwardElimination(a, b);
 		return backsubstitution(a, b);
 	}
+
+	// LU分解
+	// public static double[] luDecomposition(double[][] a) {
+	// }
 
 }
