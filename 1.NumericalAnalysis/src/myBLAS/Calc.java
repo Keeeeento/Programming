@@ -193,23 +193,19 @@ public class Calc {
 	// 行列ノルム
 	// 1ノルム
 	public static double matNorm1(double[][] a) {
-		double norm = 0.0;
-		double sum = 0.0;
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				sum += Math.abs(a[i][j]);
-			}
-			if (sum > norm) {
-				norm = sum;
-			}
-			sum = 0;
-		}
-		return norm;
+		return matNormInf(transpose(a));
 	}
 
 	// 無限大ノルム
 	public static double matNormInf(double[][] a) {
-		return matNorm1(transpose(a));
+		double norm = 0.0;
+		for (int i = 0; i < a.length; i++) {
+			double sum = 0.0;
+			for (int j = 0; j < a[0].length; j++) {
+				sum += Math.abs(a[i][j]);
+			}
+			norm = Math.max(norm, sum);
+		}
+		return norm;
 	}
-
 }
