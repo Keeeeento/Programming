@@ -2,7 +2,7 @@ package myBLAS;
 
 public class Main {
 	public static void main(String[] args) {
-		int n = 5;
+		int n =7 ;
 		double[][] a = new double[n][n];
 		double[][] b = new double[n][n];
 		double[] x = new double[n];
@@ -11,36 +11,37 @@ public class Main {
 		// 適当な値の格納
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				a[i][j] = i * i - 2 * j;
+				a[i][j] = 1.0 / (2 + i + 5 * j);
 				b[i][j] = i * j;
 			}
-			x[i] = i;
+			x[i] = 3 * i + 5;
 			y[i] = 1.0 / (i + 1);
 		}
 
-		Calc.printVec(x);
-		Calc.printMat(a);
+		// Calc.printVec(x);
+		// Calc.printMat(a);
+		//
+		// Calc.printVec(Calc.scalarMultiple(n, x));
+		// Calc.printVec(Calc.addVec(x, y));
+		// Calc.printVec(Calc.subVec(x, y));
+		// System.out.println(Calc.innProd(x, y));
+		//
+		// Calc.printVec(Calc.matVec(a, x));
+		// Calc.printVec(Calc.residual(a, x, y));
+		//
+		// Calc.printMat(Calc.addMat(a, b));
+		// Calc.printMat(Calc.subMat(a, b));
+		// Calc.printMat(Calc.multipleMat(a, b));
+		//
+		// System.out.println(Calc.vecNorm1(x));
+		// System.out.println(Calc.vecNorm2(x));
+		// System.out.println(Calc.vecNormInf(x));
+		//
+		// System.out.println(Calc.matNorm1(a));
+		// System.out.println(Calc.matNormInf(a));
 
-		Calc.printVec(Calc.scalarMultiple(n, x));
-		Calc.printVec(Calc.addVec(x, y));
-		Calc.printVec(Calc.subVec(x, y));
-		System.out.println(Calc.innProd(x, y));
-
-		Calc.printVec(Calc.matVec(a, x));
-		Calc.printVec(Calc.residual(a, x, y));
-
-		Calc.printMat(Calc.addMat(a, b));
-		Calc.printMat(Calc.subMat(a, b));
-		Calc.printMat(Calc.multipleMat(a, b));
-
-		System.out.println(Calc.vecNorm1(x));
-		System.out.println(Calc.vecNorm2(x));
-		System.out.println(Calc.vecNormInf(x));
-
-		System.out.println(Calc.matNorm1(a));
-		System.out.println(Calc.matNormInf(a));
-
-
+		Calculation.forwardElimination(a, x);
+		Calculation.printe(a, 3);
 
 	}
 }

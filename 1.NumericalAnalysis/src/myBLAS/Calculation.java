@@ -344,20 +344,6 @@ public class Calculation {
 		}
 	}
 
-	// // 行列の作成
-	// public static void create(double[][] a) {
-	// for (int i = 0; i < a.length; i++) {
-	// for (int j = 0; j < a[0].length; j++) {
-	// a[i][j] += ijRelation(i,j);
-	// }
-	// }
-	// }
-	//
-	// // 行列の作成に必要なメソッド
-	// public static double ijRelation(double i, double j) {
-	// return i + j;
-	// }
-
 	// ベクトルに関する演算
 	// ベクトルxをc倍する
 	public static double[] scalarMultiple(double c, double x[]) {
@@ -369,10 +355,18 @@ public class Calculation {
 
 	// 2つのベクトルの加算
 	public static double[] add(double x[], double y[]) {
-		for (int i = 0; i < x.length; i++) {
-			x[i] += y[i];
+		int n = x.length;
+		int m = y.length;
+		double[] z = new double[n];
+		try {
+			for (int i = 0; i < Math.max(n, m); i++) {
+				z[i] = x[i] + y[i];
+			}
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("ベクトルのサイズが違います");
 		}
-		return x;
+		return z;
 	}
 
 	// 2つのベクトルの減算
@@ -382,9 +376,15 @@ public class Calculation {
 
 	// 2つのベクトルの内積
 	public static double innerProduct(double[] x, double[] y) {
+		int n = x.length;
+		int m = y.length;
 		double innerProduct = 0.0;
-		for (int i = 0; i < x.length; i++) {
-			innerProduct += x[i] * y[i];
+		try {
+			for (int i = 0; i < Math.max(n, m); i++) {
+				innerProduct += x[i] * y[i];
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("ベクトルのサイズが違います");
 		}
 		return innerProduct;
 	}
@@ -392,11 +392,18 @@ public class Calculation {
 	// 行列,ベクトルに関する演算
 	// 行列Aとベクトルxの積
 	public static double[] multiple(double[][] a, double[] x) {
-		double[] y = new double[a.length];
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				y[i] += a[i][j] * x[j];
+		int n = a.length;
+		int m = a[0].length;
+		int k = x.length;
+		double[] y = new double[n];
+		try {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < Math.max(m, k); j++) {
+					y[i] += a[i][j] * x[j];
+				}
 			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("行列の列数とベクトルのサイズが違います");
 		}
 		return y;
 	}
@@ -430,13 +437,21 @@ public class Calculation {
 
 	// 2つの行列の加算
 	public static double[][] add(double[][] a, double[][] b) {
-
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				a[i][j] += b[i][j];
+		int n1 = a.length;
+		int m1 = a[0].length;
+		int n2 = b.length;
+		int m2 = b[0].length;
+		double[][] c = new double[n1][m2];
+		try {
+			for (int i = 0; i < Math.max(n1, n2); i++) {
+				for (int j = 0; j < Math.max(m1, m2); j++) {
+					c[i][j] = a[i][j] + b[i][j];
+				}
 			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("行列のサイズが違います");
 		}
-		return a;
+		return c;
 	}
 
 	// 2つの行列の減算
@@ -446,13 +461,21 @@ public class Calculation {
 
 	// 2つの行列の積
 	public static double[][] multiple(double[][] a, double[][] b) {
-		double[][] c = new double[a.length][b[0].length];
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				for (int k = 0; k < b[0].length; k++) {
-					c[i][j] += a[i][k] + b[k][j];
+		int n1 = a.length;
+		int m1 = a[0].length;
+		int n2 = b.length;
+		int m2 = b[0].length;
+		double[][] c = new double[n1][m2];
+		try {
+			for (int i = 0; i < n1; i++) {
+				for (int j = 0; j < Math.max(m1, n2); j++) {
+					for (int k = 0; k < m2; k++) {
+						c[i][j] += a[i][k] + b[k][j];
+					}
 				}
 			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("行列のサイズが積を定義できません");
 		}
 		return c;
 	}
