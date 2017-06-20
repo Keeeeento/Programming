@@ -2,7 +2,7 @@ package myBLAS;
 
 public class Main {
 	public static void main(String[] args) {
-		int n =7 ;
+		int n = 7;
 		double[][] a = new double[n][n];
 		double[][] b = new double[n][n];
 		double[] x = new double[n];
@@ -40,8 +40,18 @@ public class Main {
 		// System.out.println(Calc.matNorm1(a));
 		// System.out.println(Calc.matNormInf(a));
 
-		Calculation.forwardElimination(a, x);
-		Calculation.printe(a, 3);
+		// Calculation.forwardElimination(a, x);
+		// Calculation.printe(a, 3);
 
+		// Calculation.print(a);
+		// Calculation.print(Calculation.luDecomposition(a));
+		// Calculation.print(Calculation.Inverse(a));
+
+		double[][] mat = {{1,1,0,3},{2,1,-1,1},{3,-1,-1,2},{-1,2,3,-1}};
+		double [][] lu = Calculation.luDecomposition(mat);
+		Calculation.print(lu);
+		Calculation.print(Calculation.l(lu));
+		Calculation.print(Calculation.u(lu));
+		Calculation.print(Calculation.Inverse(mat));
 	}
 }

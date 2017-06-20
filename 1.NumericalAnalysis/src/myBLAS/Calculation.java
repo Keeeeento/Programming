@@ -353,6 +353,16 @@ public class Calculation {
 		return x;
 	}
 
+	// ベクトルのコピー
+	public static double[] copy(double[] b) {
+		int n = b.length;
+		double[] x = new double[n];
+		for (int i = 0; i < n; i++) {
+			x[i] = b[i];
+		}
+		return x;
+	}
+
 	// 2つのベクトルの加算
 	public static double[] add(double x[], double y[]) {
 		int n = x.length;
@@ -435,6 +445,64 @@ public class Calculation {
 		return b;
 	}
 
+	// 行列のコピー
+	public static double[][] copy(double[][] a) {
+		int n = a.length;
+		int m = a[0].length;
+		double[][] copy = new double[n][m];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				copy[i][j] = a[i][j];
+			}
+		}
+		return copy;
+	}
+
+	// 単位行列の作成
+	public static void identity(double[][] a) {
+		int n = a.length;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i == j) {
+					a[i][j] = 1.0;
+				} else {
+					a[i][j] = 0.0;
+				}
+			}
+		}
+
+	}
+
+	// LU分解でのL
+	public static double[][] l(double[][] a) {
+		int n = a.length;
+		double[][] l = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i > j) {
+					l[i][j] = a[i][j];
+				} else if (i == j) {
+					l[i][j] = 1;
+				}
+			}
+		}
+		return l;
+	}
+
+	// LU分解でのU
+	public static double[][] u(double[][] a) {
+		int n = a.length;
+		double[][] u = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i <= j) {
+					u[i][j] = a[i][j];
+				}
+			}
+		}
+		return u;
+	}
+
 	// 2つの行列の加算
 	public static double[][] add(double[][] a, double[][] b) {
 		int n1 = a.length;
@@ -512,7 +580,7 @@ public class Calculation {
 
 	// 行列ノルム
 	// 1ノルム
-	public static double manhattanNorm(double[][] a) {
+	public static double infinityNorm(double[][] a) {
 		double norm = 0.0;
 		double sum = 0.0;
 		for (int i = 0; i < a.length; i++) {
@@ -528,8 +596,8 @@ public class Calculation {
 	}
 
 	// 無限大ノルム
-	public static double infinityNorm(double[][] a) {
-		return manhattanNorm(transpose(a));
+	public static double manhattanNorm(double[][] a) {
+		return infinityNorm(transpose(a));
 	}
 
 	// ガウス消去法
@@ -566,27 +634,72 @@ public class Calculation {
 		}
 	}
 
+	// 前進代入
+	// lは対角成分が1の下三角行列
+	public static double[] forwardSubstitution(double[][] l, double[] b) {
+		int n = b.length;
+		double[] x = copy(b);
+		for (int k = 0; k < n; k++) {
+			for (int j = 0; j <= k; j++) {
+				x[k] -= l[k][j] * x[j];
+			}
+		}
+		return x;
+	}
+
 	// 後退代入
-	public static double[] backsubstitution(double[][] a, double[] b) {
+	public static double[] backSubstitution(double[][] a, double[] b) {
 		int n = a.length;
+		double[] x = copy(b);
 		for (int k = n - 1; k >= 0; k--) {
 			for (int j = k + 1; j < n; j++) {
-				b[k] += -a[k][j] * b[j];
+				x[k] += -a[k][j] * x[j];
 			}
-			b[k] /= a[k][k];
-
+			x[k] /= a[k][k];
 		}
-		return b;
+		return x;
 	}
 
 	// ガウス消去法
 	public static double[] gaussianElimination(double[][] a, double[] b) {
 		forwardElimination(a, b);
-		return backsubstitution(a, b);
+		return backSubstitution(a, b);
 	}
 
 	// LU分解
-	// public static double[] luDecomposition(double[][] a) {
-	// }
+	// 下三角行列がL, 上三角行列がUである行列を返す
+	public static double[][] luDecomposition(double[][] a) {
+		int n = a.length;
+		double[][] lu = copy(a);
+		for (int k = 0; k < n; k++) {
+			for (int i = k + 1; i < n; i++) {
+				double alpha = lu[i][k] / lu[k][k];
+				for (int j = k + 1; j < n; j++) {
+					lu[i][j] -= alpha * lu[k][j];
+				}
+				lu[i][k] = alpha;
+			}
+		}
+		return lu;
+	}
+
+	public static double[][] Inverse(double[][] a) {
+		int n = a.length;
+		double[][] inv = new double[n][n];
+		double[][] lu = luDecomposition(a);
+		double[][] l = l(lu);
+		double[][] u = u(lu);
+		double[][] e = new double[n][n];
+		identity(e);
+		double[] x = new double[n];
+		double[] y = new double[n];
+		for (int i = 0; i < n; i++) {
+			y = forwardSubstitution(l, e[i]);
+			x = backSubstitution(u, y);
+			inv[i] = x;
+		}
+
+		return inv;
+	}
 
 }
