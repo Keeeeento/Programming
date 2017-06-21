@@ -363,6 +363,13 @@ public class Calculation {
 		return x;
 	}
 
+	// ベクトルの要素をすべてnに
+	public static void allNumber(double[] b, double n) {
+		for (int i = 0; i < b.length; i++) {
+			b[i] = n;
+		}
+	}
+
 	// 2つのベクトルの加算
 	public static double[] add(double x[], double y[]) {
 		int n = x.length;
@@ -640,7 +647,7 @@ public class Calculation {
 		int n = b.length;
 		double[] x = copy(b);
 		for (int k = 0; k < n; k++) {
-			for (int j = 0; j <= k; j++) {
+			for (int j = 0; j < k; j++) {
 				x[k] -= l[k][j] * x[j];
 			}
 		}
@@ -648,12 +655,12 @@ public class Calculation {
 	}
 
 	// 後退代入
-	public static double[] backSubstitution(double[][] a, double[] b) {
+	public static double[] backwardSubstitution(double[][] a, double[] b) {
 		int n = a.length;
 		double[] x = copy(b);
 		for (int k = n - 1; k >= 0; k--) {
 			for (int j = k + 1; j < n; j++) {
-				x[k] += -a[k][j] * x[j];
+				x[k] -= a[k][j] * x[j];
 			}
 			x[k] /= a[k][k];
 		}
@@ -663,7 +670,7 @@ public class Calculation {
 	// ガウス消去法
 	public static double[] gaussianElimination(double[][] a, double[] b) {
 		forwardElimination(a, b);
-		return backSubstitution(a, b);
+		return backwardSubstitution(a, b);
 	}
 
 	// LU分解
@@ -683,6 +690,23 @@ public class Calculation {
 		return lu;
 	}
 
+	// LU分解でxを求める
+	public static double[] solveByLUDecomposition(double[][] a, double[] b) {
+		int n = a.length;
+		double[] x = new double[n];
+		double[] y = new double[n];
+		double[][] lu = new double[n][n];
+		lu = luDecomposition(a);
+		double[][] l = l(lu);
+		double[][] u = u(lu);
+
+		y = forwardSubstitution(l, b);
+		x = backwardSubstitution(u, y);
+
+		return x;
+	}
+
+	// 逆行列
 	public static double[][] Inverse(double[][] a) {
 		int n = a.length;
 		double[][] inv = new double[n][n];
@@ -695,11 +719,11 @@ public class Calculation {
 		double[] y = new double[n];
 		for (int i = 0; i < n; i++) {
 			y = forwardSubstitution(l, e[i]);
-			x = backSubstitution(u, y);
+			x = backwardSubstitution(u, y);
 			inv[i] = x;
 		}
 
-		return inv;
+		return transpose(inv);
 	}
 
 }
