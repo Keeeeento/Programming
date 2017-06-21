@@ -626,6 +626,52 @@ public class Calculation {
 		}
 	}
 
+	// ピボット選択付きガウス消去法
+	public static double[] pivotGaussianElimination(double[][] a, double[] b) {
+		int n = a.length;
+		int ell = 0; // 絶対値最大成分の行番号
+		double alpha = 0.0;
+		double pivot = 0.0;
+
+		// 前進消去過程
+		for (int k = 0; k < n - 1; k++) {
+			ell = k;
+			pivot = Math.abs(a[k][k]);
+
+			// pivot選択
+			for (int i = k + 1; i < n; i++) {
+				if (pivot < Math.abs(a[i][k])) {
+					pivot = Math.abs(a[i][k]);
+					ell = i;
+				}
+			}
+
+			// 行の入れ替え
+			for (int j = k; j < n; j++) {
+				pivot = a[k][j];
+				a[k][j] = a[ell][j];
+				a[ell][j] = pivot;
+			}
+			pivot = b[k];
+			b[k] = b[ell];
+			b[ell] = pivot;
+
+			// 第k列目の消去
+			for (int i = k + 1; i < n; i++) {
+				alpha = a[i][k] / a[k][k];
+				for (int j = k + 1; j < n; j++) {
+					a[i][j] -= alpha * a[k][j];
+				}
+				b[i] -= alpha * b[k];
+			}
+
+
+		}
+		// 後退代入過程
+		backwardSubstitution(a, b);
+		return b;
+	}
+
 	// 前進消去(0とみなす)
 	public static void forwardEliminationNonZero(double[][] a, double[] b) {
 		int n = a.length;
