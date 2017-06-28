@@ -51,6 +51,22 @@ public class Vector {
 		System.out.println();
 	}
 
+	// 指数表記
+	public void printf() {
+		for (int i = 0; i < this.data.length; i++) {
+			System.out.printf("%.3e ", this.data[i]);
+		}
+		System.out.println();
+	}
+
+	public void printf(String str) {
+		System.out.println(str + " = ");
+		for (int i = 0; i < this.data.length; i++) {
+			System.out.printf("%.3e ", this.data[i]);
+		}
+		System.out.println();
+	}
+
 	// コピー
 	public Vector copy(Vector a) {
 		this.n = a.data.length;
@@ -129,4 +145,25 @@ public class Vector {
 		}
 		return norm;
 	}
+
+	// 1ノルム絶対誤差
+	public double getAbsoluteErrorOfOneNorm(Vector x) {
+		return sub(x, this).getManhattanNorm();
+	}
+
+	// 無限大ノルム絶対誤差
+	public double getAbsoluteErrorOfInfinityNorm(Vector x) {
+		return sub(x, this).getInfinityNorm();
+	}
+
+	// 1ノルム相対誤差
+	public double getRelativeErrorOfOneNorm(Vector x) {
+		return this.getAbsoluteErrorOfOneNorm(x) / x.getManhattanNorm();
+	}
+
+	// 無限大ノルムの相対誤差
+	public double getRelativeErrorOfInfinityNorm(Vector x) {
+		return this.getAbsoluteErrorOfInfinityNorm(x) / x.getInfinityNorm();
+	}
+
 }

@@ -86,6 +86,15 @@ public class Matrix {
 		return a;
 	}
 
+	// Hilbert行列の作成
+	public void hilbert() {
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				data[i - 1][j - 1] = 1.0 / (i + j - 1);
+			}
+		}
+	}
+
 	// 行列のc倍
 	public Matrix scalarMultiple(double c) {
 		Matrix a = this;
@@ -185,21 +194,77 @@ public class Matrix {
 		return norm;
 	}
 
+	// 行列とベクトルの積
+	public Vector multiply(Matrix a, Vector x) {
+		Vector y = new Vector(x.getN());
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				y.getData()[i] += a.data[i][j] * x.getData()[j];
+			}
+		}
+		return y;
+	}
+
+	// 残差
+	public Vector residual(Matrix a, Vector x, Vector b) {
+		return x.sub(multiply(a, x), b);
+	}
+
 	// 前進消去
 	public void forwardElimination(Matrix a, Vector b) {
+		this.n = a.n;
 		double alpha = 0.0;
 		for (int k = 0; k < n - 1; k++) {
 			for (int i = k + 1; i < n; i++) {
 				alpha = a.data[i][k] / a.data[k][k];
 				for (int j = k; j < n; j++) {
 					a.data[i][j] -= alpha * a.data[k][j];
-					if (i > j) {
-						a.data[i][j] = 0.0;
-					}
 				}
 				b.getData()[i] -= alpha * b.getData()[k];
 			}
 		}
+	}
+
+	// ピボット選択付き前進消去
+	public void pivotingForwardElimination(Matrix a, Vector b) {
+		this.n = a.n;
+		int ell = 0; // 絶対値最大成分の行番号
+		double alpha = 0.0;
+		double pivot = 0.0;
+
+		// 前進消去過程
+		for (int k = 0; k < n - 1; k++) {
+			ell = k;
+			pivot = Math.abs(a.data[k][k]);
+
+			// pivot選択
+			for (int i = k + 1; i < n; i++) {
+				if (pivot < Math.abs(a.data[i][k])) {
+					pivot = Math.abs(a.data[i][k]);
+					ell = i;
+				}
+			}
+
+			// 行の入れ替え
+			for (int j = k; j < n; j++) {
+				pivot = a.data[k][j];
+				a.data[k][j] = a.data[ell][j];
+				a.data[ell][j] = pivot;
+			}
+			pivot = b.getData()[k];
+			b.getData()[k] = b.getData()[ell];
+			b.getData()[ell] = pivot;
+
+			// 第k列目の消去
+			for (int i = k + 1; i < n; i++) {
+				alpha = a.data[i][k] / a.data[k][k];
+				for (int j = k + 1; j < n; j++) {
+					a.data[i][j] -= alpha * a.data[k][j];
+				}
+				b.getData()[i] -= alpha * b.getData()[k];
+			}
+		}
+
 	}
 
 	// 前進代入
@@ -217,7 +282,7 @@ public class Matrix {
 
 	// 後退代入
 	public Vector backwardSubstitution(Matrix a, Vector b) {
-		Vector x = new Vector(b.getData());
+		Vector x = b.copy(b);
 		for (int k = n - 1; k >= 0; k--) {
 			for (int j = k + 1; j < n; j++) {
 				x.getData()[k] -= a.data[k][j] * x.getData()[j];
@@ -229,8 +294,18 @@ public class Matrix {
 
 	// ガウス消去法
 	public Vector gaussianElimination(Matrix a, Vector b) {
-		forwardElimination(a, b);
-		return backwardSubstitution(a, b);
+		Matrix a2 = a.copy(a);
+		Vector b2 = b.copy(b);
+		forwardElimination(a2, b2);
+		return backwardSubstitution(a2, b2);
+	}
+
+	// ピボット選択付きガウス消去法
+	public Vector pivotGaussianElimination(Matrix a, Vector b) {
+		Matrix a2 = a.copy(a);
+		Vector b2 = b.copy(b);
+		pivotingForwardElimination(a2, b2);
+		return backwardSubstitution(a2, b2);
 	}
 
 	// LU分解
@@ -306,12 +381,12 @@ public class Matrix {
 	}
 
 	// 条件数
-	public double oneConditionNumber(Matrix a) {
-		return a.getManhattanNorm() * Inverse(a).getManhattanNorm();
+	public double getOneConditionNumber() {
+		return this.getManhattanNorm() * Inverse(this).getManhattanNorm();
 	}
 
-	public double infinityConditionNumber(Matrix a) {
-		return a.getInfinityNorm() * Inverse(a).getInfinityNorm();
+	public double getInfinityConditionNumber() {
+		return this.getInfinityNorm() * Inverse(this).getInfinityNorm();
 	}
 
 }
