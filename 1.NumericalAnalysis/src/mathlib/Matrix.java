@@ -176,6 +176,20 @@ public class Matrix {
 		return addition(a, scalarMultiple(-1));
 	}
 
+	// 行列の積
+	public Matrix mutiply(Matrix a, Matrix b) {
+		n = a.data.length;
+		Matrix c = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				for (int k = 0; k < n; k++) {
+					c.data[i][j] = a.data[i][k] * b.data[k][j];
+				}
+			}
+		}
+		return c;
+	}
+
 	// 1ノルム
 	public double getManhattanNorm() {
 		return this.transpose().getInfinityNorm();
@@ -209,6 +223,9 @@ public class Matrix {
 	public Vector residual(Matrix a, Vector x, Vector b) {
 		return x.sub(multiply(a, x), b);
 	}
+
+	// // 残差1ノルム
+	// public Vector residualOfOneNorm()
 
 	// 前進消去
 	public void forwardElimination(Matrix a, Vector b) {
@@ -355,6 +372,20 @@ public class Matrix {
 		return u;
 	}
 
+	// LU分解でxを求める
+	public Vector solveByLUDecomposition(Matrix a, Vector b) {
+		n = a.data.length;
+		Vector x = new Vector(n);
+		Vector y = new Vector(n);
+		Matrix lu = new Matrix(n);
+		lu = luDecomposition(a);
+		Matrix l = l(lu);
+		Matrix u = u(lu);
+		y = forwardSubstitution(l, b);
+		x = backwardSubstitution(u, y);
+		return x;
+	}
+
 	// 逆行列
 	public Matrix Inverse(Matrix a) {
 		int n = a.n;
@@ -387,6 +418,126 @@ public class Matrix {
 
 	public double getInfinityConditionNumber() {
 		return this.getInfinityNorm() * Inverse(this).getInfinityNorm();
+	}
+
+	// ヤコビ法
+
+	// public Vector jacobi(Matrix a, Vector b) {
+	// n = a.data.length;
+	// Vector x = new Vector(n);
+	// Matrix diagnal = new Matrix(n); // 対角行列
+	// Matrix lower = new Matrix(n); // 狭義下三角行列
+	// Matrix upper = new Matrix(n); // 狭義上三角行列
+	// for (int i = 0; i < n; i++) {
+	// for (int j = 0; j < n; j++) {
+	// if (i == j) {
+	// diagnal.data[i][j] = a.data[i][j];
+	// } else if (i > j) {
+	// lower.data[i][j] = a.data[i][j];
+	// } else if (i < j) {
+	// upper.data[i][j] = a.data[i][j];
+	// }
+	// }
+	// }
+	//
+	// return x;
+	// }
+
+	// ヤコビ法
+	public Vector jacobi(Matrix a, Vector b) {
+		n = b.getData().length;
+		final double epsilon = 10e-8;
+		final int maxCountNumber = 2000;
+		int count = 0;
+		Vector x = b.copy(b);
+		Vector xOld = new Vector(n);
+		xOld.allNumber(1);
+
+		while (xOld.getRelativeErrorOfOneNorm(x) >= epsilon && maxCountNumber >= count) {
+			// System.out.printf("%5.10e\n",
+			// xOld.getRelativeErrorOfInfinityNorm(x));
+			xOld = x.copy(x);
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (i != j) {
+						x.getData()[i] -= a.data[i][j] * xOld.getData()[j];
+					}
+				}
+				x.getData()[i] /= a.data[i][i];
+			}
+			count++;
+			System.out.println(count);
+		}
+		return x;
+	}
+
+	public Vector jacobi2(Matrix a, Vector b) {
+		n = b.getData().length;
+		final double epsilon = 10e-8;
+		final int maxCountNumber = 2000;
+		int count = 0;
+		Vector x = b.copy(b);
+		Vector xOld = x.copy(x);
+		xOld.allNumber(1);
+
+		while (xOld.getRelativeErrorOfOneNorm(x) >= epsilon && maxCountNumber >= count) {
+			double sum = 0.0;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (i != j) {
+						sum += a.data[i][j] * xOld.getData()[j];
+					}
+				}
+				x.getData()[i] -= sum;
+				x.getData()[i] /= a.data[i][i];
+				xOld.getData()[i] = x.getData()[i];
+			}
+			count++;
+			System.out.println(count);
+		}
+		return x;
+	}
+
+	// 対角行列
+	public Matrix diagnal() {
+		n = this.data.length;
+		Matrix diagnal = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i == j) {
+					diagnal.data[i][j] = this.data[i][j];
+				}
+			}
+		}
+		return diagnal;
+	}
+
+	// 狭義下三角行列
+	public Matrix lower() {
+		n = this.data.length;
+		Matrix lower = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i > j) {
+					lower.data[i][j] = this.data[i][j];
+				}
+			}
+		}
+		return lower;
+	}
+
+	// 狭義上三角行列
+	public Matrix upper() {
+		n = this.data.length;
+		Matrix upper = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i < j) {
+					upper.data[i][j] = this.data[i][j];
+				}
+			}
+		}
+		return upper;
 	}
 
 }

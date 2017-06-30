@@ -87,11 +87,10 @@ public class Vector {
 	}
 
 	// 要素をすべてn
-	public Vector allNumber(double n) {
+	public void allNumber(double num) {
 		for (int i = 0; i < this.n; i++) {
-			this.data[i] = n;
+			this.data[i] = num;
 		}
-		return this;
 	}
 
 	// 加算
