@@ -4,6 +4,8 @@ public class Matrix {
 	private int n;
 	private int m;
 	private double[][] data;
+	private double epsilon = 1e-8;
+	private int maxCountNumber = 2000;
 
 	public int getN() {
 		return n;
@@ -29,12 +31,28 @@ public class Matrix {
 		this.data = data;
 	}
 
+	public double getEpsilon() {
+		return epsilon;
+	}
+
+	public void setEpsilon(double epsilon) {
+		this.epsilon = epsilon;
+	}
+
+	public int getMaxCountNumber() {
+		return maxCountNumber;
+	}
+
+	public void setMaxCountNumber(int maxCountNumber) {
+		this.maxCountNumber = maxCountNumber;
+	}
+
 	// 行列のコンソール表示
 	public void print() {
 		Matrix a = this;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				System.out.printf("%.10f ", a.data[i][j]);
+				System.out.printf("%.3f ", a.data[i][j]);
 			}
 			System.out.println();
 		}
@@ -46,7 +64,31 @@ public class Matrix {
 		System.out.println(str + " = ");
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				System.out.printf("%.10f ", a.data[i][j]);
+				System.out.printf("%.3f ", a.data[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	// 指数表記
+	public void printf() {
+		Matrix a = this;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				System.out.printf("%.3e ", a.data[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	public void printf(String str) {
+		Matrix a = this;
+		System.out.println(str + " = ");
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				System.out.printf("%.3e ", a.data[i][j]);
 			}
 			System.out.println();
 		}
@@ -86,11 +128,19 @@ public class Matrix {
 		return a;
 	}
 
-	// Hilbert行列の作成
+	// ヒルベルト行列の作成
 	public void hilbert() {
 		for (int i = 1; i <= n; i++) {
 			for (int j = 1; j <= n; j++) {
 				data[i - 1][j - 1] = 1.0 / (i + j - 1);
+			}
+		}
+	}
+
+	public void hilbertPlus1() {
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				data[i - 1][j - 1] = 1.0 / (i + j);
 			}
 		}
 	}
@@ -234,9 +284,6 @@ public class Matrix {
 		return x.sub(multiply(a, x), b);
 	}
 
-	// // 残差1ノルム
-	// public Vector residualOfOneNorm()
-
 	// 前進消去
 	public void forwardElimination(Matrix a, Vector b) {
 		this.n = a.n;
@@ -250,6 +297,42 @@ public class Matrix {
 				b.getData()[i] -= alpha * b.getData()[k];
 			}
 		}
+	}
+
+	// 前進消去過程後のA
+	public Matrix forwardEliminatedMatrix(Matrix a, Vector b) {
+		this.n = a.n;
+		double alpha = 0.0;
+		Matrix a2 = a.copy();
+		Vector b2 = b.copy();
+		for (int k = 0; k < n - 1; k++) {
+			for (int i = k + 1; i < n; i++) {
+				alpha = a2.data[i][k] / a2.data[k][k];
+				for (int j = k; j < n; j++) {
+					a2.data[i][j] -= alpha * a2.data[k][j];
+				}
+				b2.getData()[i] -= alpha * b2.getData()[k];
+			}
+		}
+		return a2;
+	}
+
+	// 前進消去過程後のb
+	public Vector forwardEliminatedVector(Matrix a, Vector b) {
+		this.n = a.n;
+		double alpha = 0.0;
+		Matrix a2 = a.copy();
+		Vector b2 = b.copy();
+		for (int k = 0; k < n - 1; k++) {
+			for (int i = k + 1; i < n; i++) {
+				alpha = a2.data[i][k] / a2.data[k][k];
+				for (int j = k; j < n; j++) {
+					a2.data[i][j] -= alpha * a2.data[k][j];
+				}
+				b2.getData()[i] -= alpha * b2.getData()[k];
+			}
+		}
+		return b2;
 	}
 
 	// ピボット選択付き前進消去
@@ -431,34 +514,9 @@ public class Matrix {
 	}
 
 	// ヤコビ法
-
-	// public Vector jacobi(Matrix a, Vector b) {
-	// n = a.data.length;
-	// Vector x = new Vector(n);
-	// Matrix diagnal = new Matrix(n); // 対角行列
-	// Matrix lower = new Matrix(n); // 狭義下三角行列
-	// Matrix upper = new Matrix(n); // 狭義上三角行列
-	// for (int i = 0; i < n; i++) {
-	// for (int j = 0; j < n; j++) {
-	// if (i == j) {
-	// diagnal.data[i][j] = a.data[i][j];
-	// } else if (i > j) {
-	// lower.data[i][j] = a.data[i][j];
-	// } else if (i < j) {
-	// upper.data[i][j] = a.data[i][j];
-	// }
-	// }
-	// }
-	//
-	// return x;
-	// }
-
-	// ヤコビ法
 	public Vector jacobi(Matrix a, Vector b) {
 		n = b.getData().length;
-		double epsilon = 10e-8;
-		int maxCountNumber = 2000;
-		int count = 0;
+		int count;
 		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);
 		// xOld.allNumber(1);
@@ -479,24 +537,23 @@ public class Matrix {
 				xOld = x.copy();
 			}
 		}
-		System.out.println("count = " + count);
+		if (count < maxCountNumber) {
+			System.out.println("count = " + count);
+		} else {
+			System.out.println("収束しません");
+		}
 
-		// System.out.println(count);
 		return x;
 
 	}
 
-	public Vector jacobiUndifined(Matrix a, Vector b) {
+	public Vector jacobiWithoutSum(Matrix a, Vector b) { // 未完成
 		n = b.getData().length;
-		final double epsilon = 10e-8;
-		final int maxCountNumber = 2000;
-		int count = 0;
-		Vector x = b.copy(b);
+		int count;
+		Vector x = b.copy();
 		Vector xOld = new Vector(n);
-		xOld.allNumber(1);
 
-		while (xOld.getRelativeErrorOfOneNorm(x) >= epsilon && maxCountNumber >= count) {
-			xOld = x.copy(x);
+		for (count = 0; count < maxCountNumber; count++) {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					if (i != j) {
@@ -504,11 +561,55 @@ public class Matrix {
 					}
 				}
 				x.getData()[i] /= a.data[i][i];
+
 			}
-			count++;
-			System.out.println(count);
+			System.out.println(xOld.getRelativeErrorOfOneNorm(x));
+			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
+				break;
+			} else {
+				xOld = x.copy();
+			}
 		}
+		System.out.println("count = " + count);
+
 		return x;
+	}
+
+	// ガウスザイデル法
+	public Vector gaussSeidel(Matrix a, Vector b) {
+		n = b.getData().length;
+		int count;
+		Vector x = new Vector(n);
+		Vector xOld = new Vector(n);
+
+		for (count = 0; count < maxCountNumber; count++) {
+			for (int i = 0; i < n; i++) {
+				double sum1 = 0.0;
+				double sum2 = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (j > i) {
+						sum1 += a.data[i][j] * x.getData()[j];
+					} else if (j < i) {
+						sum2 += a.data[i][j] * xOld.getData()[j];
+					}
+				}
+
+				x.getData()[i] = (b.getData()[i] - sum1 - sum2) / a.getData()[i][i];
+			}
+			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
+				break;
+			} else {
+				xOld = x.copy();
+			}
+		}
+		if (count < maxCountNumber) {
+			System.out.println("count = " + count);
+		} else {
+			System.out.println("収束しません");
+		}
+
+		return x;
+
 	}
 
 	// 対角行列

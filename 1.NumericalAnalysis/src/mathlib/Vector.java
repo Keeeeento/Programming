@@ -41,6 +41,7 @@ public class Vector {
 			System.out.printf("%.10f ", this.data[i]);
 		}
 		System.out.println();
+		System.out.println();
 	}
 
 	public void print(String str) {
@@ -48,6 +49,7 @@ public class Vector {
 		for (int i = 0; i < this.data.length; i++) {
 			System.out.printf("%.10f ", this.data[i]);
 		}
+		System.out.println();
 		System.out.println();
 	}
 
@@ -57,6 +59,7 @@ public class Vector {
 			System.out.printf("%.3e ", this.data[i]);
 		}
 		System.out.println();
+		System.out.println();
 	}
 
 	public void printf(String str) {
@@ -64,6 +67,7 @@ public class Vector {
 		for (int i = 0; i < this.data.length; i++) {
 			System.out.printf("%.3e ", this.data[i]);
 		}
+		System.out.println();
 		System.out.println();
 	}
 
@@ -171,6 +175,31 @@ public class Vector {
 	// 無限大ノルムの相対誤差
 	public double getRelativeErrorOfInfinityNorm(Vector x) {
 		return this.getAbsoluteErrorOfInfinityNorm(x) / x.getInfinityNorm();
+	}
+
+	// 残差
+	public Vector residual(Matrix a, Vector b) {
+		return this.sub(a.multiply(a, this), b);
+	}
+
+	// 1ノルム絶対残差
+	public double getAbsoluteResidualOfOneNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getManhattanNorm();
+	}
+
+	// 無限大ノルム絶対残差
+	public double getAbsoluteResidualOfInfinityNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getInfinityNorm();
+	}
+
+	// 1ノルム相対残差
+	public double getRelativeResidualOfOneNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getManhattanNorm() / b.getManhattanNorm();
+	}
+
+	// 無限大ノルム相対残差
+	public double getRelativeResidualOfInfinityNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getInfinityNorm() / b.getInfinityNorm();
 	}
 
 }

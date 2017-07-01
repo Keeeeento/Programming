@@ -4,8 +4,8 @@ import myBLAS.Calculation;
 
 public class GaussianElimination5 {
 
-	// |Δb|∞ / |b*|∞ = 9.901e-03
-	// |x₁*-x*|∞ / |x*|∞ = 2.192e+02
+	// |Δb|∞ / |b*|∞ = 1.000e-02
+	// |x₁*-x*|∞ / |x*|∞ = 2.543e+00
 
 	public static void main(String[] args) {
 

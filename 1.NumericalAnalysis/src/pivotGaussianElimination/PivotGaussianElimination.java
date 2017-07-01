@@ -4,16 +4,6 @@ import mathlib.Matrix;
 import mathlib.Vector;
 
 public class PivotGaussianElimination {
-	// (1)
-	// κ1(A) = 3.387e+10
-	// (2)
-	// x1 =
-	// 1.174e+00 -4.479e+00 5.579e+01 -2.501e+02 6.037e+02 -7.825e+02 5.234e+02
-	// -1.389e+02
-	// (3)
-	// x.error = 2.950e+02
-	// (4)
-	// κ1(A) * b.error = 8.680e+06
 	public static void main(String[] args) {
 		int n = 8;
 

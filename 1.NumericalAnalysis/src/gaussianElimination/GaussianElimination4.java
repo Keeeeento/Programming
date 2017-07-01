@@ -45,7 +45,7 @@ public class GaussianElimination4 {
 		bAsterisk1 = Calculation.add(bAsterisk, bDelta);
 
 		// ガウスの消去法
-		xAsterisk1 = Calculation.backsubstitution(a, bAsterisk1);
+		xAsterisk1 = Calculation.backwardSubstitution(a, bAsterisk1);
 
 		System.out.println("xAsterisk1 = ");
 		Calculation.printe(xAsterisk1, 3);
