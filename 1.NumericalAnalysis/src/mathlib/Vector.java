@@ -112,13 +112,24 @@ public class Vector {
 		for (int i = 0; i < n; i++) {
 			z.data[i] = x.data[i] + y.data[i];
 		}
-
 		return z;
 	}
 
+	public Vector add(Vector x) {
+		Vector y = this.copy();
+		for (int i = 0; i < n; i++) {
+			y.data[i] += x.data[i];
+		}
+		return y;
+	}
+
 	// 減算
-	public Vector sub(Vector x, Vector y) {
+	public Vector subtract(Vector x, Vector y) {
 		return add(x, y.scalarMultiply(-1));
+	}
+
+	public Vector subtract(Vector x) {
+		return this.add(x.scalarMultiply(-1));
 	}
 
 	// 内積
@@ -159,17 +170,27 @@ public class Vector {
 
 	// 1ノルム絶対誤差
 	public double getAbsoluteErrorOfOneNorm(Vector x) {
-		return sub(x, this).getManhattanNorm();
+		return subtract(x, this).getManhattanNorm();
+	}
+
+	// 2ノルム絶対誤差
+	public double getAbsoluteErrorOfTwoNorm(Vector x) {
+		return subtract(x, this).getEuclideanNorm();
 	}
 
 	// 無限大ノルム絶対誤差
 	public double getAbsoluteErrorOfInfinityNorm(Vector x) {
-		return sub(x, this).getInfinityNorm();
+		return subtract(x, this).getInfinityNorm();
 	}
 
 	// 1ノルム相対誤差
 	public double getRelativeErrorOfOneNorm(Vector x) {
 		return this.getAbsoluteErrorOfOneNorm(x) / x.getManhattanNorm();
+	}
+
+	// 2ノルム相対誤差
+	public double getRelativeErrorOfTwoNorm(Vector x) {
+		return this.getAbsoluteErrorOfTwoNorm(x) / x.getEuclideanNorm();
 	}
 
 	// 無限大ノルムの相対誤差
@@ -179,12 +200,17 @@ public class Vector {
 
 	// 残差
 	public Vector residual(Matrix a, Vector b) {
-		return this.sub(a.multiply(a, this), b);
+		return this.subtract(a.multiply(a, this), b);
 	}
 
 	// 1ノルム絶対残差
 	public double getAbsoluteResidualOfOneNorm(Matrix a, Vector b) {
 		return this.residual(a, b).getManhattanNorm();
+	}
+
+	// 2ノルム絶対残差
+	public double getAbsoluteResidualOfTwoNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getEuclideanNorm();
 	}
 
 	// 無限大ノルム絶対残差
@@ -195,6 +221,11 @@ public class Vector {
 	// 1ノルム相対残差
 	public double getRelativeResidualOfOneNorm(Matrix a, Vector b) {
 		return this.residual(a, b).getManhattanNorm() / b.getManhattanNorm();
+	}
+
+	// 2ノルム相対残差
+	public double getRelativeResidualOfTwoNorm(Matrix a, Vector b) {
+		return this.residual(a, b).getEuclideanNorm() / b.getEuclideanNorm();
 	}
 
 	// 無限大ノルム相対残差

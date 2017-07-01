@@ -211,7 +211,7 @@ public class Matrix {
 	}
 
 	// 行列の和
-	public Matrix addition(Matrix b) {
+	public Matrix add(Matrix b) {
 		Matrix a = copy(this);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -221,7 +221,7 @@ public class Matrix {
 		return a;
 	}
 
-	public Matrix addition(Matrix a, Matrix b) {
+	public Matrix add(Matrix a, Matrix b) {
 		Matrix c = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -232,8 +232,12 @@ public class Matrix {
 	}
 
 	// 行列の差
-	public Matrix substract(Matrix a, Matrix b) {
-		return addition(a, scalarMultiple(-1));
+	public Matrix subtract(Matrix a, Matrix b) {
+		return add(a, scalarMultiple(-1));
+	}
+
+	public Matrix subtract(Matrix a) {
+		return this.add(a.scalarMultiple(-1));
 	}
 
 	// 行列の積
@@ -279,9 +283,9 @@ public class Matrix {
 		return y;
 	}
 
-	// 残差
+	// 残差(Vectorクラスにもあり)
 	public Vector residual(Matrix a, Vector x, Vector b) {
-		return x.sub(multiply(a, x), b);
+		return x.subtract(multiply(a, x), b);
 	}
 
 	// 前進消去
