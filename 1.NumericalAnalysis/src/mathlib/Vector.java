@@ -68,6 +68,14 @@ public class Vector {
 	}
 
 	// コピー
+	public Vector copy() {
+		Vector vector = new Vector(n);
+		for (int i = 0; i < n; i++) {
+			vector.data[i] = this.data[i];
+		}
+		return vector;
+	}
+
 	public Vector copy(Vector a) {
 		this.n = a.data.length;
 		Vector vector = new Vector(n);

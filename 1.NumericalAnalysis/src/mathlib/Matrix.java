@@ -129,6 +129,16 @@ public class Matrix {
 	}
 
 	// 行列のコピー
+	public Matrix copy() {
+		Matrix copy = new Matrix(n, m);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				copy.data[i][j] = this.data[i][j];
+			}
+		}
+		return copy;
+	}
+
 	public Matrix copy(Matrix a) {
 		Matrix copy = new Matrix(n, m);
 		for (int i = 0; i < n; i++) {
@@ -446,6 +456,38 @@ public class Matrix {
 	// ヤコビ法
 	public Vector jacobi(Matrix a, Vector b) {
 		n = b.getData().length;
+		double epsilon = 10e-8;
+		int maxCountNumber = 2000;
+		int count = 0;
+		Vector x = new Vector(n);
+		Vector xOld = new Vector(n);
+		// xOld.allNumber(1);
+
+		for (count = 0; count < maxCountNumber; count++) {
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (i != j) {
+						sum += a.data[i][j] * xOld.getData()[j];
+					}
+				}
+				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
+			}
+			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
+				break;
+			} else {
+				xOld = x.copy();
+			}
+		}
+		System.out.println("count = " + count);
+
+		// System.out.println(count);
+		return x;
+
+	}
+
+	public Vector jacobiUndifined(Matrix a, Vector b) {
+		n = b.getData().length;
 		final double epsilon = 10e-8;
 		final int maxCountNumber = 2000;
 		int count = 0;
@@ -454,8 +496,6 @@ public class Matrix {
 		xOld.allNumber(1);
 
 		while (xOld.getRelativeErrorOfOneNorm(x) >= epsilon && maxCountNumber >= count) {
-			// System.out.printf("%5.10e\n",
-			// xOld.getRelativeErrorOfInfinityNorm(x));
 			xOld = x.copy(x);
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
@@ -464,33 +504,6 @@ public class Matrix {
 					}
 				}
 				x.getData()[i] /= a.data[i][i];
-			}
-			count++;
-			System.out.println(count);
-		}
-		return x;
-	}
-
-	public Vector jacobi2(Matrix a, Vector b) {
-		n = b.getData().length;
-		final double epsilon = 10e-8;
-		final int maxCountNumber = 2000;
-		int count = 0;
-		Vector x = b.copy(b);
-		Vector xOld = x.copy(x);
-		xOld.allNumber(1);
-
-		while (xOld.getRelativeErrorOfOneNorm(x) >= epsilon && maxCountNumber >= count) {
-			double sum = 0.0;
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					if (i != j) {
-						sum += a.data[i][j] * xOld.getData()[j];
-					}
-				}
-				x.getData()[i] -= sum;
-				x.getData()[i] /= a.data[i][i];
-				xOld.getData()[i] = x.getData()[i];
 			}
 			count++;
 			System.out.println(count);
