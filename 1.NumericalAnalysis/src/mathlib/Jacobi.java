@@ -1,11 +1,11 @@
 package mathlib;
 
 public class Jacobi {
-	private double epsilon = 10e-8;
-	private int maxCountNumber = 2000;
-	private int count = 0;
+	static double epsilon = 10e-8;
+	static int maxCountNumber = 2000;
+	static int count = 0;
 
-	public Vector solveByJacobi(Matrix a, Vector b) {
+	public static Vector solveByJacobi(Matrix a, Vector b) {
 		int n = b.getData().length;
 		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);

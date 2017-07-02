@@ -18,12 +18,8 @@ public class Main {
 		// a.setEpsilon(1e-12);
 		// a.jacobi(a, b).print("jacobi");
 		// a.gaussSeidel(a, b).print("gaussSeidel");
-
-		a.add(b).print("a+b");
-		a.subtract(b).print("a-b");
-
-		c.add(d).print();
-		c.subtract(d).print();
+		Jacobi.solveByJacobi(a, d);
+		a.gaussSeidel(a, d).print();
 
 	}
 
