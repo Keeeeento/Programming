@@ -18,7 +18,7 @@ public class Main {
 		// a.setEpsilon(1e-12);
 		// a.jacobi(a, b).print("jacobi");
 		// a.gaussSeidel(a, b).print("gaussSeidel");
-		Jacobi.solveByJacobi(a, d);
+		Jacobi.solve(a, d);
 		a.gaussSeidel(a, d).print();
 
 	}
