@@ -2,11 +2,11 @@ package mathlib;
 
 public class GaussSeidel {
 
-	private double epsilon = 1e-8;
-	private int maxCountNumber = 2000;
+	static double epsilon = 1e-8;
+	static int maxCountNumber = 100000;
 
 	// ガウスザイデル法
-	public Vector solve(Matrix a, Vector b) {
+	public static Vector solve(Matrix a, Vector b) {
 		int n = b.getData().length;
 		int count;
 		Vector x = new Vector(n);

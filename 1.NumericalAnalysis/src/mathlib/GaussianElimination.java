@@ -3,7 +3,7 @@ package mathlib;
 public class GaussianElimination {
 
 	// 前進消去
-	public void forwardElimination(Matrix a, Vector b) {
+	public static void forwardElimination(Matrix a, Vector b) {
 		int n = a.getData().length;
 		double alpha = 0.0;
 		for (int k = 0; k < n - 1; k++) {
@@ -18,7 +18,7 @@ public class GaussianElimination {
 	}
 
 	// 前進消去過程後のA
-	public Matrix forwardEliminatedMatrix(Matrix a, Vector b) {
+	public static Matrix forwardEliminatedMatrix(Matrix a, Vector b) {
 		int n = a.getData().length;
 		double alpha = 0.0;
 		Matrix a2 = a.copy();
@@ -36,7 +36,7 @@ public class GaussianElimination {
 	}
 
 	// 前進消去過程後のb
-	public Vector forwardEliminatedVector(Matrix a, Vector b) {
+	public static Vector forwardEliminatedVector(Matrix a, Vector b) {
 		int n = a.getData().length;
 		double alpha = 0.0;
 		Matrix a2 = a.copy();
@@ -54,7 +54,7 @@ public class GaussianElimination {
 	}
 
 	// ピボット選択付き前進消去
-	public void pivotingForwardElimination(Matrix a, Vector b) {
+	public static void pivotingForwardElimination(Matrix a, Vector b) {
 		int n = a.getData().length;
 		int ell = 0; // 絶対値最大成分の行番号
 		double alpha = 0.0;
@@ -96,7 +96,7 @@ public class GaussianElimination {
 	}
 
 	// 後退代入
-	public Vector backwardSubstitution(Matrix a, Vector b) {
+	public static Vector backwardSubstitution(Matrix a, Vector b) {
 		int n = a.getData().length;
 		Vector x = b.copy(b);
 		for (int k = n - 1; k >= 0; k--) {
@@ -109,7 +109,7 @@ public class GaussianElimination {
 	}
 
 	// ガウス消去法
-	public Vector solve(Matrix a, Vector b) {
+	public static Vector solve(Matrix a, Vector b) {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		forwardElimination(a2, b2);
@@ -117,7 +117,7 @@ public class GaussianElimination {
 	}
 
 	// ピボット選択付きガウス消去法
-	public Vector pivotSolve(Matrix a, Vector b) {
+	public static Vector pivotSolve(Matrix a, Vector b) {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		pivotingForwardElimination(a2, b2);

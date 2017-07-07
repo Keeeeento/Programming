@@ -148,6 +148,7 @@ public class Vector {
 			norm += Math.abs(this.data[i]);
 		}
 		return norm;
+		// return this.getNorm(1);
 	}
 
 	// 2ノルム
@@ -157,6 +158,16 @@ public class Vector {
 			norm += this.data[i] * this.data[i];
 		}
 		return Math.sqrt(norm);
+		// return this.getNorm(2);
+	}
+
+	// nノルム
+	public double getNorm(double n) {
+		double norm = 0;
+		for (int i = 0; i < this.n; i++) {
+			norm += Math.pow(this.data[i], n);
+		}
+		return Math.pow(norm, 1.0 / n);
 	}
 
 	// 無限大ノルム
@@ -233,4 +244,12 @@ public class Vector {
 		return this.residual(a, b).getInfinityNorm() / b.getInfinityNorm();
 	}
 
+	// 第1成分を1e-3倍
+	public Vector deltaAddedVector() {
+		int n = this.getData().length;
+		Vector b = this.copy();
+		Vector delta = new Vector(n);
+		b.getData()[0] += 1e-3 * b.getData()[0];
+		return b.add(delta);
+	}
 }

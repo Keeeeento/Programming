@@ -504,7 +504,6 @@ public class Matrix {
 			x = backwardSubstitution(u, y);
 			inv.data[i] = x.getData();
 		}
-
 		return inv.transpose();
 	}
 
@@ -656,6 +655,18 @@ public class Matrix {
 			}
 		}
 		return upper;
+	}
+
+	// 行列式
+	public double getDeterminant() {
+		int n = this.getData().length;
+		Matrix u = LUDecomposition.u(this);
+		double det = 1;
+
+		for (int i = 0; i < n; i++) {
+			det *= u.getData()[i][i];
+		}
+		return det;
 	}
 
 }

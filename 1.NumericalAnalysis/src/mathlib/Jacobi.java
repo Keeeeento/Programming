@@ -2,7 +2,7 @@ package mathlib;
 
 public class Jacobi {
 	static double epsilon = 10e-8;
-	static int maxCountNumber = 2000;
+	static int maxCountNumber = 100000;
 	static int count = 0;
 
 	public static Vector solve(Matrix a, Vector b) {

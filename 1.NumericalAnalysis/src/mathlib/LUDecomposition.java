@@ -3,7 +3,7 @@ package mathlib;
 public class LUDecomposition {
 	// 前進代入
 	// lは対角成分が1の下三角行列
-	public Vector forwardSubstitution(Matrix l, Vector b) {
+	public static Vector forwardSubstitution(Matrix l, Vector b) {
 		int n = l.getData().length;
 		Vector x = new Vector(b.getN());
 		x = x.copy(b);
@@ -16,7 +16,7 @@ public class LUDecomposition {
 	}
 
 	// 後退代入
-	public Vector backwardSubstitution(Matrix a, Vector b) {
+	public static Vector backwardSubstitution(Matrix a, Vector b) {
 		int n = a.getData().length;
 		Vector x = b.copy(b);
 		for (int k = n - 1; k >= 0; k--) {
@@ -30,7 +30,7 @@ public class LUDecomposition {
 
 	// LU分解
 	// 下三角行列がL, 上三角行列がUである行列を返す
-	public Matrix luDecomposition(Matrix a) {
+	public static Matrix luDecomposition(Matrix a) {
 		int n = a.getN();
 		Matrix lu = a.copy();
 		for (int k = 0; k < n; k++) {
@@ -46,7 +46,7 @@ public class LUDecomposition {
 	}
 
 	// LU分解でのL
-	public Matrix l(Matrix a) {
+	public static Matrix l(Matrix a) {
 		int n = a.getData().length;
 		Matrix l = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ public class LUDecomposition {
 	}
 
 	// LU分解でのU
-	public Matrix u(Matrix a) {
+	public static Matrix u(Matrix a) {
 		int n = a.getData().length;
 		Matrix u = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -76,7 +76,7 @@ public class LUDecomposition {
 	}
 
 	// LU分解でxを求める
-	public Vector solveByLUDecomposition(Matrix a, Vector b) {
+	public static Vector solve(Matrix a, Vector b) {
 		int n = a.getData().length;
 		Vector x = new Vector(n);
 		Vector y = new Vector(n);
