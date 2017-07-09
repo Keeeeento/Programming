@@ -2,7 +2,7 @@ package mathlib;
 
 public class LUDecomposition {
 
-	static int count = 0;
+	static int operation = 0;
 
 	// LU分解
 	// 下三角行列がL, 上三角行列がUである行列を返す
@@ -12,13 +12,13 @@ public class LUDecomposition {
 		for (int k = 0; k < n; k++) {
 			for (int i = k + 1; i < n; i++) {
 				double alpha = lu.getData()[i][k] / lu.getData()[k][k];
-				count++;
+				operation++;
 				for (int j = k + 1; j < n; j++) {
 					lu.getData()[i][j] -= alpha * lu.getData()[k][j];
-					count++;
+					operation++;
 				}
 				lu.getData()[i][k] = alpha;
-				count++;
+				operation++;
 			}
 		}
 		return lu;
@@ -65,7 +65,7 @@ public class LUDecomposition {
 		for (int k = 0; k < n; k++) {
 			for (int j = 0; j < k; j++) {
 				x.getData()[k] -= l.getData()[k][j] * x.getData()[j];
-				count++;
+				operation++;
 			}
 		}
 		return x;
@@ -93,7 +93,7 @@ public class LUDecomposition {
 		Matrix u = u(a);
 		y = forwardSubstitution(l, b);
 		x = backwardSubstitution(u, y);
-		System.out.println("count = " + count);
+		System.out.println("count = " + operation);
 		return x;
 	}
 

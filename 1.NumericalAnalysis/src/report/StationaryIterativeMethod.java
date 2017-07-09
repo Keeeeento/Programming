@@ -1,22 +1,22 @@
 package report;
 
 import mathlib.GaussSeidel;
+import mathlib.GaussianElimination;
 import mathlib.Jacobi;
+import mathlib.LUDecomposition;
 import mathlib.Matrix;
 import mathlib.Vector;
 
 public class StationaryIterativeMethod {
 	public static void main(String[] args) {
-		int n = 100;
+		long start = System.nanoTime();
+		int n = 10;
 		double[][] aData = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i == j) {
-					aData[i][j] = 2;
-				} else if (Math.abs(i - j) == 1) {
-					aData[i][j] = -1;
-				}
-			}
+		aData[0][0] = aData[n - 1][n - 1] = 2;
+		for (int i = 1; i < n - 1; i++) {
+			aData[i][i] = 2;
+			aData[i][i - 1] = -1;
+			aData[i][i + 1] = -1;
 		}
 		Matrix a = new Matrix(aData);
 
@@ -24,16 +24,52 @@ public class StationaryIterativeMethod {
 		for (int i = 0; i < n; i++) {
 			bData[i] = 1;
 		}
+
+		Vector x = new Vector(new double[] { 0.5, 4.5, 7.5, 9.5, 10.5, 10.5, 9.5, 7.5, 4.5, 0.5 });
+
 		Vector b = new Vector(bData);
 
-		long start = System.nanoTime();
-		Jacobi.solve(a, b);
-		long end = System.nanoTime();
-		System.out.println("Time:" + (end - start) / 1000000f + "ms");
+		System.out.println("-Gaussian Elimination-");
+		Vector x1 = GaussianElimination.solve(a, b);
+		System.out.println("relativeError1one = " + x1.getRelativeErrorOfOneNorm(x));
+		System.out.println("relativeError1inf = " + x1.getRelativeErrorOfInfinityNorm(x));
+		System.out.println("absoluteError1one = " + x1.getAbsoluteErrorOfOneNorm(x));
+		System.out.println("absoluteError1inf = " + x1.getAbsoluteErrorOfInfinityNorm(x));
+		System.out.println();
 
-		start = System.nanoTime();
-		GaussSeidel.solve(a, b);
-		end = System.nanoTime();
+		System.out.println("-Pivod Gaussian Elimination-");
+		Vector x2 = GaussianElimination.pivotSolve(a, b);
+		System.out.println("relativeError2one = " + x2.getRelativeErrorOfOneNorm(x));
+		System.out.println("relativeError2inf = " + x2.getRelativeErrorOfInfinityNorm(x));
+		System.out.println("absoluteError2one = " + x2.getAbsoluteErrorOfOneNorm(x));
+		System.out.println("absoluteError2inf = " + x2.getAbsoluteErrorOfInfinityNorm(x));
+		System.out.println();
+
+		System.out.println("-LU Decomposition-");
+		Vector x3 = LUDecomposition.solve(a, b);
+		System.out.println("relativeError3one = " + x3.getRelativeErrorOfOneNorm(x));
+		System.out.println("relativeError3inf = " + x3.getRelativeErrorOfInfinityNorm(x));
+		System.out.println("absoluteError3one = " + x3.getAbsoluteErrorOfOneNorm(x));
+		System.out.println("absoluteError3inf = " + x3.getAbsoluteErrorOfInfinityNorm(x));
+		System.out.println();
+
+		System.out.println("-Jacobi-");
+		Vector x4 = Jacobi.solve(a, b);
+		System.out.println("relativeError4one = " + x4.getRelativeErrorOfOneNorm(x));
+		System.out.println("relativeError4inf = " + x4.getRelativeErrorOfInfinityNorm(x));
+		System.out.println("absoluteError4one = " + x4.getAbsoluteErrorOfOneNorm(x));
+		System.out.println("absoluteError4inf = " + x4.getAbsoluteErrorOfInfinityNorm(x));
+		System.out.println();
+
+		System.out.println("-Gauss Seidel-");
+		Vector x5 = GaussSeidel.solve(a, b);
+		System.out.println("relativeError5one = " + x5.getRelativeErrorOfOneNorm(x));
+		System.out.println("relativeError5inf = " + x5.getRelativeErrorOfInfinityNorm(x));
+		System.out.println("absoluteError5one = " + x5.getAbsoluteErrorOfOneNorm(x));
+		System.out.println("absoluteError5inf = " + x5.getAbsoluteErrorOfInfinityNorm(x));
+		System.out.println();
+
+		long end = System.nanoTime();
 		System.out.println("Time:" + (end - start) / 1000000f + "ms");
 
 	}
