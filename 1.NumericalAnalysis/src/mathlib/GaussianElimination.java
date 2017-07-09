@@ -1,6 +1,7 @@
 package mathlib;
 
 public class GaussianElimination {
+	static int operation = 0;
 
 	// 前進消去
 	public static void forwardElimination(Matrix a, Vector b) {
@@ -9,10 +10,13 @@ public class GaussianElimination {
 		for (int k = 0; k < n - 1; k++) {
 			for (int i = k + 1; i < n; i++) {
 				alpha = a.getData()[i][k] / a.getData()[k][k];
+				operation++;
 				for (int j = k; j < n; j++) {
 					a.getData()[i][j] -= alpha * a.getData()[k][j];
+					operation++;
 				}
 				b.getData()[i] -= alpha * b.getData()[k];
+				operation++;
 			}
 		}
 	}
@@ -70,6 +74,7 @@ public class GaussianElimination {
 				if (pivot < Math.abs(a.getData()[i][k])) {
 					pivot = Math.abs(a.getData()[i][k]);
 					ell = i;
+					operation++;
 				}
 			}
 
@@ -78,18 +83,24 @@ public class GaussianElimination {
 				pivot = a.getData()[k][j];
 				a.getData()[k][j] = a.getData()[ell][j];
 				a.getData()[ell][j] = pivot;
+				operation++;
 			}
+
 			pivot = b.getData()[k];
 			b.getData()[k] = b.getData()[ell];
 			b.getData()[ell] = pivot;
+			operation++;
 
 			// 第k列目の消去
 			for (int i = k + 1; i < n; i++) {
 				alpha = a.getData()[i][k] / a.getData()[k][k];
+				operation++;
 				for (int j = k + 1; j < n; j++) {
 					a.getData()[i][j] -= alpha * a.getData()[k][j];
+					operation++;
 				}
 				b.getData()[i] -= alpha * b.getData()[k];
+				operation++;
 			}
 		}
 
@@ -102,8 +113,10 @@ public class GaussianElimination {
 		for (int k = n - 1; k >= 0; k--) {
 			for (int j = k + 1; j < n; j++) {
 				x.getData()[k] -= a.getData()[k][j] * x.getData()[j];
+				operation++;
 			}
 			x.getData()[k] /= a.getData()[k][k];
+			operation++;
 		}
 		return x;
 	}
@@ -113,6 +126,7 @@ public class GaussianElimination {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		forwardElimination(a2, b2);
+		System.out.println("operation = " + operation);
 		return backwardSubstitution(a2, b2);
 	}
 
@@ -121,6 +135,7 @@ public class GaussianElimination {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		pivotingForwardElimination(a2, b2);
+		System.out.println("operation = " + operation);
 		return backwardSubstitution(a2, b2);
 	}
 }

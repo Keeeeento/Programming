@@ -46,11 +46,7 @@ public class Vector {
 
 	public void print(String str) {
 		System.out.println(str + " = ");
-		for (int i = 0; i < this.data.length; i++) {
-			System.out.printf("%.10f ", this.data[i]);
-		}
-		System.out.println();
-		System.out.println();
+		this.print();
 	}
 
 	// 指数表記
@@ -64,11 +60,7 @@ public class Vector {
 
 	public void printf(String str) {
 		System.out.println(str + " = ");
-		for (int i = 0; i < this.data.length; i++) {
-			System.out.printf("%.3e ", this.data[i]);
-		}
-		System.out.println();
-		System.out.println();
+		this.printf();
 	}
 
 	// コピー

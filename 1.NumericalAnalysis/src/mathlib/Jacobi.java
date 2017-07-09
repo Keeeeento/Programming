@@ -1,44 +1,47 @@
 package mathlib;
 
-public class Jacobi {
-	static double epsilon = 10e-8;
-	static int maxCountNumber = 100000;
+public class Jacobi extends StationaryIterativeMethod {
+	static int iteration; // 反復回数
+	static int operation = 0; // 演算回数
 
 	public static Vector solve(Matrix a, Vector b) {
 		int n = b.getData().length;
-		int count;
 		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);
 
-		for (count = 0; count < maxCountNumber; count++) {
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				x.getData()[i] = b.getData()[i];
+				operation++;
 				for (int j = 0; j < n; j++) {
 					if (i != j) {
 						x.getData()[i] -= a.getData()[i][j] * xOld.getData()[j];
+						operation++;
 					}
 				}
 				x.getData()[i] /= a.getData()[i][i];
-
+				operation++;
 			}
-			// System.out.println(xOld.getRelativeErrorOfOneNorm(x));
 			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
 				break;
 			} else {
 				xOld = x.copy();
+				operation++;
 			}
 		}
-		System.out.println("count = " + count);
+		System.out.println("iteration = " + iteration);
+		System.out.println("operation = " + operation);
 
 		return x;
 	}
 
+	// 使わない
 	public static Vector solveWithSum(Matrix a, Vector b) {
 		int n = b.getData().length;
 		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);
-		int count = 0;
-		for (count = 0; count < maxCountNumber; count++) {
+		int iteration = 0;
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
 				for (int j = 0; j < n; j++) {
@@ -54,8 +57,8 @@ public class Jacobi {
 				xOld = x.copy();
 			}
 		}
-		if (count < maxCountNumber) {
-			System.out.println("count = " + count);
+		if (iteration < maxIterationNumber) {
+			System.out.println("iteration = " + iteration);
 		} else {
 			System.out.println("収束しません");
 		}

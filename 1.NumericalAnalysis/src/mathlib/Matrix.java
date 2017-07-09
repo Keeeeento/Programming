@@ -4,8 +4,6 @@ public class Matrix {
 	private int n;
 	private int m;
 	private double[][] data;
-	private double epsilon = 1e-8;
-	private int maxCountNumber = 2000;
 
 	public int getN() {
 		return n;
@@ -31,28 +29,16 @@ public class Matrix {
 		this.data = data;
 	}
 
-	public double getEpsilon() {
-		return epsilon;
-	}
-
-	public void setEpsilon(double epsilon) {
-		this.epsilon = epsilon;
-	}
-
-	public int getMaxCountNumber() {
-		return maxCountNumber;
-	}
-
-	public void setMaxCountNumber(int maxCountNumber) {
-		this.maxCountNumber = maxCountNumber;
-	}
-
 	// 行列のコンソール表示
 	public void print() {
-		Matrix a = this;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				System.out.printf("%.3f ", a.data[i][j]);
+				if (this.data[i][j] >= 0) {
+					System.out.printf(" %.3f ", this.data[i][j]);
+
+				} else {
+					System.out.printf("%.3f ", this.data[i][j]);
+				}
 			}
 			System.out.println();
 		}
@@ -60,23 +46,20 @@ public class Matrix {
 	}
 
 	public void print(String str) {
-		Matrix a = this;
 		System.out.println(str + " = ");
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
-				System.out.printf("%.3f ", a.data[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println();
+		this.print();
 	}
 
 	// 指数表記
 	public void printf() {
-		Matrix a = this;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				System.out.printf("%.3e ", a.data[i][j]);
+				if (this.data[i][j] >= 0) {
+					System.out.printf(" %.3e ", this.data[i][j]);
+
+				} else {
+					System.out.printf("%.3e ", this.data[i][j]);
+				}
 			}
 			System.out.println();
 		}
@@ -84,15 +67,8 @@ public class Matrix {
 	}
 
 	public void printf(String str) {
-		Matrix a = this;
 		System.out.println(str + " = ");
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
-				System.out.printf("%.3e ", a.data[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println();
+		this.printf();
 	}
 
 	// n×m行列(全要素0)
@@ -119,7 +95,17 @@ public class Matrix {
 		}
 	}
 
-	// n次単位上列の作成
+	// 行列を単位行列化
+	public void identify() {
+		int n = this.data.length;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				this.data[i][j] = (i == j) ? 1 : 0;
+			}
+		}
+	}
+
+	// n次単位行列の作成
 	public static Matrix identity(int n) {
 		Matrix a = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -132,9 +118,19 @@ public class Matrix {
 	public void hilbert() {
 		for (int i = 1; i <= n; i++) {
 			for (int j = 1; j <= n; j++) {
-				data[i - 1][j - 1] = 1.0 / (i + j - 1);
+				this.data[i - 1][j - 1] = 1.0 / (i + j - 1);
 			}
 		}
+	}
+
+	public static Matrix hilbert(int n) {
+		Matrix a = new Matrix(n);
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				a.data[i - 1][j - 1] = 1.0 / (i + j - 1);
+			}
+		}
+		return a;
 	}
 
 	public void hilbertPlus1() {
@@ -199,15 +195,15 @@ public class Matrix {
 		return copy;
 	}
 
-	// 単位行列
-	public void identity() {
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i == j) {
-					this.data[i][j] = 1;
-				}
+	// 行列のコピーk(1<k<n)まで
+	public Matrix copyFromOneTo(int k) {
+		Matrix a = new Matrix(k);
+		for (int i = 0; i < k; i++) {
+			for (int j = 0; j < k; j++) {
+				a.data[i][j] = this.data[i][j];
 			}
 		}
+		return a;
 	}
 
 	// 行列の和
@@ -422,77 +418,73 @@ public class Matrix {
 		return backwardSubstitution(a2, b2);
 	}
 
-	// LU分解
-	// 下三角行列がL, 上三角行列がUである行列を返す
-	public Matrix luDecomposition(Matrix a) {
-		int n = a.getN();
-		Matrix lu = copy(a);
-		for (int k = 0; k < n; k++) {
-			for (int i = k + 1; i < n; i++) {
-				double alpha = lu.data[i][k] / lu.data[k][k];
-				for (int j = k + 1; j < n; j++) {
-					lu.data[i][j] -= alpha * lu.data[k][j];
-				}
-				lu.data[i][k] = alpha;
-			}
-		}
-		return lu;
-	}
-
-	// LU分解でのL
-	public Matrix l(Matrix a) {
-		this.n = a.n;
-		Matrix l = new Matrix(n);
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i > j) {
-					l.data[i][j] = a.data[i][j];
-				} else if (i == j) {
-					l.data[i][j] = 1;
-				}
-			}
-		}
-		return l;
-	}
-
-	// LU分解でのU
-	public Matrix u(Matrix a) {
-		this.n = a.n;
-		Matrix u = new Matrix(n);
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (i <= j) {
-					u.data[i][j] = a.data[i][j];
-				}
-			}
-		}
-		return u;
-	}
-
-	// LU分解でxを求める
-	public Vector solveByLUDecomposition(Matrix a, Vector b) {
-		n = a.data.length;
-		Vector x = new Vector(n);
-		Vector y = new Vector(n);
-		Matrix lu = new Matrix(n);
-		lu = luDecomposition(a);
-		Matrix l = l(lu);
-		Matrix u = u(lu);
-		y = forwardSubstitution(l, b);
-		x = backwardSubstitution(u, y);
-		return x;
-	}
+	// // LU分解
+	// // 下三角行列がL, 上三角行列がUである行列を返す
+	// public Matrix luDecomposition(Matrix a) {
+	// int n = a.getN();
+	// Matrix lu = copy(a);
+	// for (int k = 0; k < n; k++) {
+	// for (int i = k + 1; i < n; i++) {
+	// double alpha = lu.data[i][k] / lu.data[k][k];
+	// for (int j = k + 1; j < n; j++) {
+	// lu.data[i][j] -= alpha * lu.data[k][j];
+	// }
+	// lu.data[i][k] = alpha;
+	// }
+	// }
+	// return lu;
+	// }
+	//
+	// // LU分解でのL
+	// public Matrix l(Matrix a) {
+	// this.n = a.n;
+	// Matrix l = new Matrix(n);
+	// for (int i = 0; i < n; i++) {
+	// for (int j = 0; j < n; j++) {
+	// if (i > j) {
+	// l.data[i][j] = a.data[i][j];
+	// } else if (i == j) {
+	// l.data[i][j] = 1;
+	// }
+	// }
+	// }
+	// return l;
+	// }
+	//
+	// // LU分解でのU
+	// public Matrix u(Matrix a) {
+	// this.n = a.n;
+	// Matrix u = new Matrix(n);
+	// for (int i = 0; i < n; i++) {
+	// for (int j = 0; j < n; j++) {
+	// if (i <= j) {
+	// u.data[i][j] = a.data[i][j];
+	// }
+	// }
+	// }
+	// return u;
+	// }
+	//
+	// // LU分解でxを求める
+	// public Vector solveByLUDecomposition(Matrix a, Vector b) {
+	// n = a.data.length;
+	// Vector x = new Vector(n);
+	// Vector y = new Vector(n);
+	// Matrix lu = new Matrix(n);
+	// lu = luDecomposition(a);
+	// Matrix l = l(lu);
+	// Matrix u = u(lu);
+	// y = forwardSubstitution(l, b);
+	// x = backwardSubstitution(u, y);
+	// return x;
+	// }
 
 	// 逆行列
 	public Matrix Inverse(Matrix a) {
 		int n = a.n;
 		Matrix inv = new Matrix(n);
-		Matrix lu = new Matrix(n);
-		Matrix l = new Matrix(n);
-		Matrix u = new Matrix(n);
-		lu = lu.luDecomposition(a);
-		l = l.l(lu);
-		u = u.u(lu);
+		Matrix l = LUDecomposition.l(a);
+		Matrix u = LUDecomposition.u(a);
 
 		Vector x = new Vector(n);
 		Vector y = new Vector(n);
@@ -508,16 +500,16 @@ public class Matrix {
 	}
 
 	// 条件数
-	public double getOneConditionNumber() {
+	public double getConditionNumberOfOneNorm() {
 		return this.getManhattanNorm() * Inverse(this).getManhattanNorm();
 	}
 
-	public double getInfinityConditionNumber() {
+	public double getConditionNumberOfInfinityNorm() {
 		return this.getInfinityNorm() * Inverse(this).getInfinityNorm();
 	}
 
 	// 対角行列
-	public Matrix diagnal() {
+	public Matrix getDiagnal() {
 		n = this.data.length;
 		Matrix diagnal = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -531,7 +523,7 @@ public class Matrix {
 	}
 
 	// 狭義下三角行列
-	public Matrix lower() {
+	public Matrix getLower() {
 		n = this.data.length;
 		Matrix lower = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -545,7 +537,7 @@ public class Matrix {
 	}
 
 	// 狭義上三角行列
-	public Matrix upper() {
+	public Matrix getUpper() {
 		n = this.data.length;
 		Matrix upper = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -568,6 +560,47 @@ public class Matrix {
 			det *= u.getData()[i][i];
 		}
 		return det;
+	}
+
+	// 広義対角優位行列か否か
+	public boolean isDiagonalDominant() {
+		boolean bool = true;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (Math.abs(this.data[i][i]) < Math.abs(this.data[i][j])) {
+					bool = false;
+				}
+			}
+		}
+		return bool;
+	}
+
+	// 狭義対角優位行列か否か
+	public boolean isStrictlyDiagonalDominant() {
+		boolean bool = true;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (Math.abs(this.data[i][i]) < Math.abs(this.data[i][j])) {
+					bool = false;
+				}
+			}
+		}
+		return bool;
+	}
+
+	// 首座小行列式が正か否か → 対称行列が正定値であるか
+	public boolean isPrincipalMinorDeterminant() {
+		boolean bool = true;
+		for (int k = 0; k < n; k++) {
+			Matrix a = this.copyFromOneTo(k);
+			if (a.getDeterminant() <= 0) {
+				bool = false;
+				break;
+
+			}
+			a.print();
+		}
+		return bool;
 	}
 
 }
