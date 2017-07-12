@@ -47,7 +47,7 @@ public class Test {
 		System.out.println();
 
 		System.out.println("-Jacobi-");
-		Vector x4 = Jacobi.solve(a, b);
+		Vector x4 = Jacobi.solveWithOneNorm(a, b);
 		System.out.println("relativeError4one = " + x4.getRelativeErrorOfOneNorm(x));
 		System.out.println("relativeError4inf = " + x4.getRelativeErrorOfInfinityNorm(x));
 		System.out.println("absoluteError4one = " + x4.getAbsoluteErrorOfOneNorm(x));
@@ -55,7 +55,7 @@ public class Test {
 		System.out.println();
 
 		System.out.println("-Gauss Seidel-");
-		Vector x5 = GaussSeidel.solve(a, b);
+		Vector x5 = GaussSeidel.solveWithOneNorm(a, b);
 		System.out.println("relativeError5one = " + x5.getRelativeErrorOfOneNorm(x));
 		System.out.println("relativeError5inf = " + x5.getRelativeErrorOfInfinityNorm(x));
 		System.out.println("absoluteError5one = " + x5.getAbsoluteErrorOfOneNorm(x));

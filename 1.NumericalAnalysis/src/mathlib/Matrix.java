@@ -237,7 +237,7 @@ public class Matrix {
 	}
 
 	// 行列の積
-	public Matrix mutiply(Matrix a, Matrix b) {
+	public Matrix multiply(Matrix a, Matrix b) {
 		n = a.data.length;
 		Matrix c = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -274,6 +274,16 @@ public class Matrix {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				y.getData()[i] += a.data[i][j] * x.getData()[j];
+			}
+		}
+		return y;
+	}
+
+	public Vector multiply(Vector x) {
+		Vector y = new Vector(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				y.getData()[i] += this.data[i][j] * x.getData()[j];
 			}
 		}
 		return y;

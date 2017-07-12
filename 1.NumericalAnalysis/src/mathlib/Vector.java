@@ -153,20 +153,47 @@ public class Vector {
 		// return this.getNorm(2);
 	}
 
-	// nノルム
-	public double getNorm(double n) {
-		double norm = 0;
-		for (int i = 0; i < this.n; i++) {
-			norm += Math.pow(this.data[i], n);
-		}
-		return Math.pow(norm, 1.0 / n);
-	}
-
 	// 無限大ノルム
 	public double getInfinityNorm() {
 		double norm = 0.0;
 		for (int i = 0; i < this.n; i++) {
 			norm = Math.max(norm, Math.abs(this.data[i]));
+		}
+		return norm;
+		// return this.getNorm(inf);
+	}
+
+	// nノルム(n=0のとき無限大ノルムを返す)
+	public double getNorm(double normNumber) {
+		double norm = 0;
+		if (normNumber > 0) {
+			for (int i = 0; i < this.n; i++) {
+				norm += Math.pow(this.data[i], normNumber);
+			}
+			norm = Math.pow(norm, 1.0 / normNumber);
+		} else if (normNumber == 0) {
+			for (int i = 0; i < this.n; i++) {
+				norm = Math.max(norm, Math.abs(this.data[i]));
+			}
+		}
+		return norm;
+	}
+
+	// nノルム(無限大ノルムは"inf")
+	public double getNorm(String normNumber) {
+		double norm = 0;
+		if (normNumber.equals("inf")) {
+			for (int i = 0; i < this.n; i++) {
+				norm = Math.max(norm, Math.abs(this.data[i]));
+			}
+		} else {
+			double n = Double.parseDouble(normNumber);
+			if (n > 0) {
+				for (int i = 0; i < this.n; i++) {
+					norm += Math.pow(this.data[i], n);
+				}
+				norm = Math.pow(norm, 1.0 / n);
+			}
 		}
 		return norm;
 	}
@@ -186,6 +213,15 @@ public class Vector {
 		return subtract(x, this).getInfinityNorm();
 	}
 
+	// nノルム絶対誤差
+	public double getAbsoluteError(double normNumber, Vector x) {
+		return subtract(x, this).getNorm(normNumber);
+	}
+
+	public double getAbsoluteError(String normNumber, Vector x) {
+		return subtract(x, this).getNorm(normNumber);
+	}
+
 	// 1ノルム相対誤差
 	public double getRelativeErrorOfOneNorm(Vector x) {
 		return this.getAbsoluteErrorOfOneNorm(x) / x.getManhattanNorm();
@@ -201,9 +237,18 @@ public class Vector {
 		return this.getAbsoluteErrorOfInfinityNorm(x) / x.getInfinityNorm();
 	}
 
+	// nノルムの相対誤差
+	public double getRelativeError(double normNumber, Vector x) {
+		return this.getAbsoluteError(normNumber, x) / x.getNorm(normNumber);
+	}
+
+	public double getRelativeError(String normNumber, Vector x) {
+		return this.getAbsoluteError(normNumber, x) / x.getNorm(normNumber);
+	}
+
 	// 残差
 	public Vector residual(Matrix a, Vector b) {
-		return this.subtract(a.multiply(a, this), b);
+		return this.subtract(b, a.multiply(a, this));
 	}
 
 	// 1ノルム絶対残差
@@ -221,6 +266,15 @@ public class Vector {
 		return this.residual(a, b).getInfinityNorm();
 	}
 
+	// nノルム絶対残差
+	public double getAbsoluteResidual(double normNumber, Matrix a, Vector b) {
+		return this.residual(a, b).getNorm(normNumber);
+	}
+
+	public double getAbsoluteResidual(String normNumber, Matrix a, Vector b) {
+		return this.residual(a, b).getNorm(normNumber);
+	}
+
 	// 1ノルム相対残差
 	public double getRelativeResidualOfOneNorm(Matrix a, Vector b) {
 		return this.residual(a, b).getManhattanNorm() / b.getManhattanNorm();
@@ -234,6 +288,15 @@ public class Vector {
 	// 無限大ノルム相対残差
 	public double getRelativeResidualOfInfinityNorm(Matrix a, Vector b) {
 		return this.residual(a, b).getInfinityNorm() / b.getInfinityNorm();
+	}
+
+	// nノルム相対残差
+	public double getRelativeResidual(double normNumber, Matrix a, Vector b) {
+		return this.residual(a, b).getNorm(normNumber) / b.getNorm(normNumber);
+	}
+
+	public double getRelativeResidual(String normNumber, Matrix a, Vector b) {
+		return this.residual(a, b).getNorm(normNumber) / b.getNorm(normNumber);
 	}
 
 	// 第1成分を1e-3倍

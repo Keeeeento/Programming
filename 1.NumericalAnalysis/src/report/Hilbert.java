@@ -40,7 +40,7 @@ public class Hilbert {
 		double errorNorm2 = x2.getRelativeErrorOfOneNorm(x);
 		System.out.printf("errorNorm2 = %.3e\n", errorNorm2);
 
-		Vector x3 = Jacobi.solve(a, b);
+		Vector x3 = Jacobi.solveWithOneNorm(a, b);
 		x3.print("x3");
 		// 4
 		double condition = a.getConditionNumberOfOneNorm();

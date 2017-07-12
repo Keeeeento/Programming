@@ -1,15 +1,16 @@
 package mathlib;
 
 public class GaussSeidel extends StationaryIterativeMethod {
+	static int iteration; // 反復回数
+	static int operation = 0; // 演算回数
 
-	public static Vector solve(Matrix a, Vector b) {
+	// 収束判定条件:1ノルム相対誤差による解
+	public static Vector solveWithOneNorm(Matrix a, Vector b) {
 		int n = b.getData().length;
 		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);
 
-		int interation; // 反復回数
-		int operation = 0; // 演算回数
-		for (interation = 0; interation < maxIterationNumber; interation++) {
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
 				for (int j = 0; j < n; j++) {
@@ -29,14 +30,58 @@ public class GaussSeidel extends StationaryIterativeMethod {
 			}
 		}
 
-		if (interation < maxIterationNumber) {
-			System.out.println("iteration = " + interation);
+		if (iteration >= maxIterationNumber) {
+			System.out.println("収束しません");
+		}
+		return x;
+
+	}
+
+	// 収束判定条件:無限大ノルム相対誤差による解
+	public static Vector solveWithInfinityNorm(Matrix a, Vector b) {
+		int n = b.getData().length;
+		Vector x = new Vector(n);
+		Vector xOld = new Vector(n);
+
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (j != i) {
+						sum += a.getData()[i][j] * x.getData()[j];
+						operation++;
+					}
+				}
+				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
+				operation++;
+			}
+			if (xOld.getRelativeErrorOfInfinityNorm(x) <= epsilon) {
+				break;
+			} else {
+				xOld = x.copy();
+				operation++;
+			}
+		}
+
+		if (iteration >= maxIterationNumber) {
+			System.out.println("収束しません");
+		}
+		return x;
+
+	}
+
+	// 詳細を表示
+	public static void solveAndShowDetail(Matrix a, Vector b) {
+		System.out.println("- Gauss Seidel -");
+		Vector x = GaussSeidel.solveWithOneNorm(a, b);
+		if (iteration < maxIterationNumber) {
+			x.print("x");
+			System.out.println("iteration = " + iteration);
 			System.out.println("operation = " + operation);
 		} else {
 			System.out.println("収束しません");
 		}
-
-		return x;
+		System.out.println();
 
 	}
 
