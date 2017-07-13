@@ -10,40 +10,17 @@ import mathlib.Vector;
 public class StationaryIterativeMethod {
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		int n = 10;
-		double[][] aData = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				switch (Math.abs(i - j)) {
-				case 0:
-					aData[i][j] = 2;
-					break;
-				case 1:
-					aData[i][j] = 1;
-					break;
-				case 2:
-					aData[i][j] = 0;
-					break;
-				default:
-					break;
-				}
-			}
-		}
-		Matrix a = new Matrix(aData);
-		a.print("A");
-		System.out.println("κ1(A) = " + a.getConditionNumberOfOneNorm());
-		System.out.println("κ∞(A) = " + a.getConditionNumberOfInfinityNorm());
+		int n = 100;
+		System.out.println("n = " + n);
 
-		// Vector x = new Vector(new double[] { 0.5, 4.5,7.5, 9.5, 10.5, 10.5,
-		// 9.5, 7.5, 4.5, 0.5 });
+		Matrix a = new Matrix(n);
+		a.symmetricBand(100, 2, 1);
+		System.out.printf("κ1(A) = %.10e\n", a.getConditionNumberOfOneNorm());
+		System.out.printf("κ∞(A) = %.10e\n", a.getConditionNumberOfInfinityNorm());
+		System.out.println();
 		Vector x = new Vector(n);
 		x.allNumber(1);
 
-		// double[] bData = new double[n];
-		// for (int i = 0; i < n; i++) {
-		// bData[i] = 1;
-		// }
-		// Vector b = new Vector(bData);
 		Vector b = new Vector(n);
 
 		System.out.println("-Gaussian Elimination-");
@@ -79,6 +56,7 @@ public class StationaryIterativeMethod {
 		System.out.println("-Jacobi-");
 		b = a.multiply(x);
 		Vector x4 = Jacobi.solveWithOneNorm(a, b);
+		Jacobi.solveAndShowDetail(a, b);
 		System.out.println("relativeError4one = " + x4.getRelativeErrorOfOneNorm(x));
 		System.out.println("relativeError4inf = " + x4.getRelativeErrorOfInfinityNorm(x));
 		System.out.println("absoluteError4one = " + x4.getAbsoluteErrorOfOneNorm(x));
@@ -88,6 +66,7 @@ public class StationaryIterativeMethod {
 		System.out.println("-Gauss Seidel-");
 		b = a.multiply(x);
 		Vector x5 = GaussSeidel.solveWithOneNorm(a, b);
+		GaussSeidel.solveAndShowDetail(a, b);
 		System.out.println("relativeError5one = " + x5.getRelativeErrorOfOneNorm(x));
 		System.out.println("relativeError5inf = " + x5.getRelativeErrorOfInfinityNorm(x));
 		System.out.println("absoluteError5one = " + x5.getAbsoluteErrorOfOneNorm(x));

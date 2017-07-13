@@ -97,6 +97,14 @@ public class Vector {
 		}
 	}
 
+	public static Vector allNumber(int size, double number) {
+		Vector x = new Vector(size);
+		for (int i = 0; i < size; i++) {
+			x.getData()[i] = number;
+		}
+		return x;
+	}
+
 	// 加算
 	public Vector add(Vector x, Vector y) {
 		n = x.n;

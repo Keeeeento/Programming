@@ -93,7 +93,7 @@ public class LUDecomposition {
 		Matrix u = u(a);
 		y = forwardSubstitution(l, b);
 		x = backwardSubstitution(u, y);
-		System.out.println("count = " + operation);
+		System.out.println("operation = " + operation);
 		return x;
 	}
 

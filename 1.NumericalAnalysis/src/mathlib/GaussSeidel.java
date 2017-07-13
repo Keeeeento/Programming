@@ -4,6 +4,8 @@ public class GaussSeidel extends StationaryIterativeMethod {
 	static int iteration; // 反復回数
 	static int operation = 0; // 演算回数
 
+	// 演算回数が合わない！！！！！！！！！
+
 	// 収束判定条件:1ノルム相対誤差による解
 	public static Vector solveWithOneNorm(Matrix a, Vector b) {
 		int n = b.getData().length;
@@ -83,6 +85,24 @@ public class GaussSeidel extends StationaryIterativeMethod {
 		}
 		System.out.println();
 
+	}
+
+	// 反復回数
+	public static double getIteration(Matrix a, Vector b) {
+		GaussSeidel.solveWithOneNorm(a, b);
+		if (iteration == maxIterationNumber) {
+			iteration = 0;
+		}
+		return iteration;
+	}
+
+	// 演算回数
+	public static double getOperation(Matrix a, Vector b) {
+		GaussSeidel.solveWithOneNorm(a, b);
+		if (iteration == maxIterationNumber) {
+			operation = 0;
+		}
+		return operation;
 	}
 
 	// 使わない

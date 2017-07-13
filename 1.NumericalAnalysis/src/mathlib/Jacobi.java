@@ -4,6 +4,8 @@ public class Jacobi extends StationaryIterativeMethod {
 	static int iteration; // 反復回数
 	static int operation = 0; // 演算回数
 
+	// 演算回数が合わない！！！！！
+
 	// 収束判定条件:1ノルム相対誤差による解
 	public static Vector solveWithOneNorm(Matrix a, Vector b) {
 		int n = b.getData().length;
@@ -13,11 +15,10 @@ public class Jacobi extends StationaryIterativeMethod {
 		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				x.getData()[i] = b.getData()[i];
-				operation++;
 				for (int j = 0; j < n; j++) {
 					if (i != j) {
 						x.getData()[i] -= a.getData()[i][j] * xOld.getData()[j];
-						operation++;
+						operation += 2;
 					}
 				}
 				x.getData()[i] /= a.getData()[i][i];
@@ -27,7 +28,6 @@ public class Jacobi extends StationaryIterativeMethod {
 				break;
 			} else {
 				xOld = x.copy();
-				operation++;
 			}
 		}
 
@@ -79,6 +79,24 @@ public class Jacobi extends StationaryIterativeMethod {
 
 	}
 
+	// 反復回数
+	public static int getIteration(Matrix a, Vector b) {
+		Jacobi.solveWithOneNorm(a, b);
+		if (iteration == maxIterationNumber) {
+			iteration = 0;
+		}
+		return iteration;
+	}
+
+	// 演算回数
+	public static int getOperation(Matrix a, Vector b) {
+		Jacobi.solveWithOneNorm(a, b);
+		if (iteration == maxIterationNumber) {
+			operation = 0;
+		}
+		return operation;
+	}
+
 	// 使わない
 	public static Vector solveWithSum(Matrix a, Vector b) {
 		int n = b.getData().length;
@@ -108,6 +126,5 @@ public class Jacobi extends StationaryIterativeMethod {
 		}
 		// System.out.println(count);
 		return x;
-
 	}
 }

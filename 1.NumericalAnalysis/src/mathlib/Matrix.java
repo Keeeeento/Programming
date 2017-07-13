@@ -613,4 +613,44 @@ public class Matrix {
 		return bool;
 	}
 
+	// 対称帯行列の作成
+	public void symmetricBand(double diagnal, double diagnal2, double diagnal3) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				switch (Math.abs(i - j)) {
+				case 0:
+					this.getData()[i][j] = diagnal;
+					break;
+				case 1:
+					this.getData()[i][j] = diagnal2;
+					break;
+				case 2:
+					this.getData()[i][j] = diagnal3;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	public void symmetricBand(double diagnal, double diagnal2) {
+		this.symmetricBand(diagnal, diagnal2, 0);
+	}
+
+	public void symmetricBand(double diagnal) {
+		this.symmetricBand(diagnal, 0, 0);
+	}
+
+	public static Matrix random(int n) {
+		Matrix a = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				a.getData()[i][j] = Math.random();
+			}
+		}
+		return a;
+
+	}
+
 }
