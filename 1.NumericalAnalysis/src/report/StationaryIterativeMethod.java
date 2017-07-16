@@ -14,7 +14,7 @@ public class StationaryIterativeMethod {
 		System.out.println("n = " + n);
 
 		Matrix a = new Matrix(n);
-		a.symmetricBand(100, 2, 1);
+		a.symmetricBand(10, 2, 1);
 		System.out.printf("κ1(A) = %.10e\n", a.getConditionNumberOfOneNorm());
 		System.out.printf("κ∞(A) = %.10e\n", a.getConditionNumberOfInfinityNorm());
 		System.out.println();
@@ -55,7 +55,7 @@ public class StationaryIterativeMethod {
 
 		System.out.println("-Jacobi-");
 		b = a.multiply(x);
-		Vector x4 = Jacobi.solveWithOneNorm(a, b);
+		Vector x4 = Jacobi.solveBySum(a, b);
 		Jacobi.solveAndShowDetail(a, b);
 		System.out.println("relativeError4one = " + x4.getRelativeErrorOfOneNorm(x));
 		System.out.println("relativeError4inf = " + x4.getRelativeErrorOfInfinityNorm(x));

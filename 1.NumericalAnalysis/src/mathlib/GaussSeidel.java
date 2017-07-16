@@ -98,7 +98,7 @@ public class GaussSeidel extends StationaryIterativeMethod {
 
 	// 演算回数
 	public static double getOperation(Matrix a, Vector b) {
-		GaussSeidel.solveWithOneNorm(a, b);
+		GaussSeidel.solveBySum(a, b);
 		if (iteration == maxIterationNumber) {
 			operation = 0;
 		}
@@ -106,25 +106,28 @@ public class GaussSeidel extends StationaryIterativeMethod {
 	}
 
 	// 使わない
-	public Vector solveUncompleted(Matrix a, Vector b) { // 未完成
+	public static Vector solveBySum(Matrix a, Vector b) { // 未完成？
 		int n = b.getData().length;
-		int count;
-		Vector x = new Vector(n);
-		Vector xOld = new Vector(n);
+		int iteration;
+		Vector x = Vector.allNumber(n, 1);
+		Vector xOld = x.copy();
 
-		for (count = 0; count < maxIterationNumber; count++) {
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum1 = 0.0;
 				double sum2 = 0.0;
 				for (int j = 0; j < n; j++) {
 					if (j > i) {
 						sum1 += a.getData()[i][j] * x.getData()[j];
+						operation += 2;
 					} else if (j < i) {
 						sum2 += a.getData()[i][j] * xOld.getData()[j];
+						operation += 2;
 					}
 				}
 
 				x.getData()[i] = (b.getData()[i] - sum1 - sum2) / a.getData()[i][i];
+				operation += 2;
 			}
 			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
 				break;
@@ -132,14 +135,46 @@ public class GaussSeidel extends StationaryIterativeMethod {
 				xOld = x.copy();
 			}
 		}
-		if (count < maxIterationNumber) {
-			System.out.println("count = " + count);
+		if (iteration < maxIterationNumber) {
+			System.out.println("iteration = " + iteration);
 		} else {
 			System.out.println("収束しません");
 		}
 
 		return x;
+	}
 
+	// 収束するまで相対誤差を検出し続ける
+	public static Vector solveAndShowError(Matrix a, Vector b, Vector exactSolution, double norm) {
+		int n = b.getData().length;
+		int iteration;
+		Vector x = Vector.allNumber(n, 1); // 初期化
+		Vector xOld = x.copy();
+
+		System.out.println("-- Gauss Seidel--");
+		System.out.println("iteration number,relative error of " + norm + " norm");
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (i != j) {
+						sum += a.getData()[i][j] * x.getData()[j];
+					}
+				}
+				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
+			}
+			if (xOld.getRelativeError(norm, x) <= epsilon) {
+				break;
+			} else {
+				System.out.printf("%d, %.3e\n", iteration, x.getRelativeError(norm, exactSolution));
+				xOld = x.copy();
+			}
+		}
+		if (iteration >= maxIterationNumber) {
+			System.out.println("収束しません");
+		}
+		System.out.println();
+		return x;
 	}
 
 }

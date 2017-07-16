@@ -5,7 +5,7 @@ public class LUDecomposition {
 	static int operation = 0;
 
 	// LU分解
-	// 下三角行列がL, 上三角行列がUである行列を返す
+	// 単位下三角行列がL, 上三角行列がUである行列を返す
 	public static Matrix luDecomposition(Matrix a) {
 		int n = a.getN();
 		Matrix lu = a.copy();

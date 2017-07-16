@@ -178,7 +178,7 @@ public class Vector {
 			for (int i = 0; i < this.n; i++) {
 				norm += Math.pow(this.data[i], normNumber);
 			}
-			norm = Math.pow(norm, 1.0 / normNumber);
+			norm = Math.abs(Math.pow(norm, 1.0 / normNumber));
 		} else if (normNumber == 0) {
 			for (int i = 0; i < this.n; i++) {
 				norm = Math.max(norm, Math.abs(this.data[i]));

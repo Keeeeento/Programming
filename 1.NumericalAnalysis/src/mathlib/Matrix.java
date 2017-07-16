@@ -71,6 +71,27 @@ public class Matrix {
 		this.printf();
 	}
 
+	// 整数表記
+	public void printInt() {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (this.data[i][j] >= 0) {
+					System.out.printf(" %d ", (int) this.data[i][j]);
+
+				} else {
+					System.out.printf("%d ", (int) this.data[i][j]);
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	public void printInt(String str) {
+		System.out.println(str + " = ");
+		this.printInt();
+	}
+
 	// n×m行列(全要素0)
 	public Matrix(int n, int m) {
 		this.n = n;
@@ -642,6 +663,13 @@ public class Matrix {
 		this.symmetricBand(diagnal, 0, 0);
 	}
 
+	public static Matrix symmetricBand(int size, double diagnal, double diagnal2, double diagnal3) {
+		Matrix a = new Matrix(size);
+		a.symmetricBand(diagnal, diagnal2, diagnal3);
+		return a;
+	}
+
+	// 成分をランダムで生成
 	public static Matrix random(int n) {
 		Matrix a = new Matrix(n);
 		for (int i = 0; i < n; i++) {
