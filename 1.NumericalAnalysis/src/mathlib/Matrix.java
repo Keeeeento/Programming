@@ -116,6 +116,17 @@ public class Matrix {
 		}
 	}
 
+	// 全要素numberの行列を返す
+	public static Matrix allNumber(int size, double number) {
+		Matrix a = new Matrix(size);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				a.getData()[i][j] = number;
+			}
+		}
+		return a;
+	}
+
 	// 行列を単位行列化
 	public void identify() {
 		int n = this.data.length;
@@ -163,7 +174,7 @@ public class Matrix {
 	}
 
 	// 行列のc倍
-	public Matrix scalarMultiple(double c) {
+	public Matrix multiply(double c) {
 		Matrix a = this;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
@@ -173,7 +184,7 @@ public class Matrix {
 		return a;
 	}
 
-	public Matrix scalarMultiple(double c, Matrix a) {
+	public Matrix multiply(double c, Matrix a) {
 		Matrix b = copy(a);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
@@ -250,11 +261,11 @@ public class Matrix {
 
 	// 行列の差
 	public Matrix subtract(Matrix a, Matrix b) {
-		return add(a, scalarMultiple(-1));
+		return add(a, multiply(-1));
 	}
 
 	public Matrix subtract(Matrix a) {
-		return this.add(a.scalarMultiple(-1));
+		return this.add(a.multiply(-1));
 	}
 
 	// 行列の積
@@ -271,9 +282,27 @@ public class Matrix {
 		return c;
 	}
 
+	public Matrix multiply(Matrix a) {
+		n = a.data.length;
+		Matrix b = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				for (int k = 0; k < n; k++) {
+					b.data[i][j] = a.data[i][k] * this.data[k][j];
+				}
+			}
+		}
+		return b;
+	}
+
 	// 1ノルム
 	public double getManhattanNorm() {
 		return this.transpose().getInfinityNorm();
+	}
+
+	// 2ノルム
+	public double getEuclideanNorm() {
+		return Math.sqrt(this.getSpectralRadius());
 	}
 
 	// 無限大ノルム
@@ -287,6 +316,21 @@ public class Matrix {
 			norm = Math.max(norm, sum);
 		}
 		return norm;
+	}
+
+	// pノルム
+	public double getNorm(int p) {
+		switch (p) {
+		case 0:
+			return this.getInfinityNorm();
+		case 1:
+			return this.getManhattanNorm();
+		case 2:
+			return this.getEuclideanNorm();
+		default:
+			System.out.println(p + " norm is not difined");
+			return 0;
+		}
 	}
 
 	// 行列とベクトルの積
@@ -511,7 +555,7 @@ public class Matrix {
 	// }
 
 	// 逆行列
-	public Matrix Inverse(Matrix a) {
+	public Matrix inverse(Matrix a) {
 		int n = a.n;
 		Matrix inv = new Matrix(n);
 		Matrix l = LUDecomposition.l(a);
@@ -530,17 +574,36 @@ public class Matrix {
 		return inv.transpose();
 	}
 
+	public Matrix inverse() {
+		int n = this.n;
+		Matrix inv = new Matrix(n);
+		Matrix l = LUDecomposition.l(this);
+		Matrix u = LUDecomposition.u(this);
+
+		Vector x = new Vector(n);
+		Vector y = new Vector(n);
+		for (int i = 0; i < n; i++) {
+			double[] data = new double[n];
+			data[i] = 1;
+			Vector e = new Vector(data);
+			y = forwardSubstitution(l, e);
+			x = backwardSubstitution(u, y);
+			inv.data[i] = x.getData();
+		}
+		return inv.transpose();
+	}
+
 	// 条件数
 	public double getConditionNumberOfOneNorm() {
-		return this.getManhattanNorm() * Inverse(this).getManhattanNorm();
+		return this.getManhattanNorm() * inverse(this).getManhattanNorm();
 	}
 
 	public double getConditionNumberOfInfinityNorm() {
-		return this.getInfinityNorm() * Inverse(this).getInfinityNorm();
+		return this.getInfinityNorm() * inverse(this).getInfinityNorm();
 	}
 
 	// 対角行列
-	public Matrix getDiagnal() {
+	public Matrix getDiagonal() {
 		n = this.data.length;
 		Matrix diagnal = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -678,7 +741,34 @@ public class Matrix {
 			}
 		}
 		return a;
+	}
 
+	// スペクトル半径を求める
+	public double getSpectralRadius() {
+		int maxIterationNumber = (int) (1e+10);
+		double epsilon = 1e-16;
+		int n = this.getData().length;
+		double lambda = 0.0;
+		double lambdaOld = 0.0;
+		Vector xOld = new Vector(n);
+		Vector x = new Vector(n);
+
+		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+
+		for (int iteration = 0; iteration < maxIterationNumber; iteration++) {
+			x = this.multiply(xOld);
+			lambda = Math.abs(Vector.innerProduct(xOld, x));
+
+			if (Math.abs(lambda - lambdaOld) < epsilon) {
+				break;
+			}
+			// System.out.println(lambda);
+			lambdaOld = lambda;
+			xOld = x.scalarMultiply(1.0 / x.getNorm(2));
+
+		}
+
+		return lambda;
 	}
 
 }

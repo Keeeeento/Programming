@@ -133,7 +133,7 @@ public class Vector {
 	}
 
 	// 内積
-	public double innerProduct(Vector x, Vector y) {
+	public static double innerProduct(Vector x, Vector y) {
 		double innerProduct = 0.0;
 		for (int i = 0; i < x.n; i++) {
 			innerProduct += x.data[i] * y.data[i];

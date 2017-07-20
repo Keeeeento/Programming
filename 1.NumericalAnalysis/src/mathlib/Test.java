@@ -4,10 +4,16 @@ public class Test {
 	public static void main(String[] args) {
 
 		int n = 10;
-		Vector x = Vector.allNumber(n, 2);
-		Vector xEcact = Vector.allNumber(n, 2.001);
+		double[][] adata = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				adata[i][j] = i + j + 1;
+			}
+		}
+		Matrix a = new Matrix(adata);
+		System.out.println(a.getLower().add(a.getDiagonal()).inverse().getSpectralRadius());
+		// i = 2
+		// 0.9594929736144973
 
-		System.out.println(x.getRelativeError(1, xEcact));
 	}
-
 }

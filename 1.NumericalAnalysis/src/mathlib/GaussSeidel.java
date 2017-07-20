@@ -145,7 +145,7 @@ public class GaussSeidel extends StationaryIterativeMethod {
 	}
 
 	// 収束するまで相対誤差を検出し続ける
-	public static Vector solveAndShowError(Matrix a, Vector b, Vector exactSolution, double norm) {
+	public static Vector solveAndShowError(double norm, Matrix a, Vector b, Vector exactSolution) {
 		int n = b.getData().length;
 		int iteration;
 		Vector x = Vector.allNumber(n, 1); // 初期化
@@ -175,6 +175,36 @@ public class GaussSeidel extends StationaryIterativeMethod {
 		}
 		System.out.println();
 		return x;
+	}
+
+	// 反復回数を返す
+	public static int getIterationNumber(double norm, Matrix a, Vector b, Vector exactSolution) {
+		int n = b.getData().length;
+		int iteration;
+		Vector x = Vector.allNumber(n, 1); // 初期化
+		Vector xOld = x.copy();
+
+		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (i != j) {
+						sum += a.getData()[i][j] * x.getData()[j];
+					}
+				}
+				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
+			}
+			if (xOld.getRelativeError(norm, x) <= epsilon) {
+				break;
+			} else {
+				xOld = x.copy();
+			}
+		}
+		if (iteration >= maxIterationNumber) {
+			System.out.println("収束しません");
+			iteration = 0;
+		}
+		return iteration;
 	}
 
 }
