@@ -20,10 +20,12 @@ public class Problem2_3 {
 		// (1) Newton's Method
 		System.out.println("--Newton's Method--");
 		solveBy("Newton");
+		printConstantBy("Newton", 2);
 
 		// (2) Secant Method
 		System.out.println("--Secant Method--");
 		solveBy("Secant");
+		printConstantBy("Secant", 1.62);
 
 		// (3) Parallel Chord
 		System.out.println("--Parallel Chord--");
@@ -88,6 +90,7 @@ public class Problem2_3 {
 			if (iter == maxIter) {
 				System.out.println("収束しません");
 			}
+			break;
 		default:
 			for (iter = 0; iter < maxIter; iter++) {
 				x = iterationOf(methodName, x, 0);
@@ -98,6 +101,7 @@ public class Problem2_3 {
 			if (iter == maxIter) {
 				System.out.println("収束しません");
 			}
+			break;
 		}
 		xApproximate = x;
 	}
@@ -118,6 +122,7 @@ public class Problem2_3 {
 				xOld = x;
 				x = xNew;
 			}
+			break;
 		default:
 			for (int i = 1; i <= iter; i++) {
 				x = iterationOf(methodName, x, 0);
@@ -125,6 +130,7 @@ public class Problem2_3 {
 				System.out.printf("%d, %.5e\n", i, error);
 
 			}
+			break;
 		}
 		xApproximate = 0; // 近似解の初期化
 		System.out.println();
@@ -133,7 +139,7 @@ public class Problem2_3 {
 	// 定数Cの表示
 	// p:収束次数convergence
 	public static void printConstantBy(String methodName, double p) {
-		System.out.printf("xApproximate = %.16e\n", xApproximate);
+		//		System.out.printf("xApproximate = %.16e\n", xApproximate);
 		double xNew = x0;
 		double x = x0;
 		double xOld = x1;
@@ -165,12 +171,6 @@ public class Problem2_3 {
 	public static void solveBy(String methodName) {
 		getIterAndXBy(methodName);
 		printErrorBy(methodName);
-
 	}
-	//
-	//	public static void solveBy(String methodName, double x0, double x1) {
-	//		getIterAndXBy(methodName, x0, x1);
-	//		printErrorBy(methodName, x0, x1);
-	//	}
 
 }
