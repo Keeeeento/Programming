@@ -19,17 +19,19 @@ public class Problem2_3 {
 
 		// (1) Newton's Method
 		System.out.println("--Newton's Method--");
-		solveBy("Newton");
-		printConstantBy("Newton", 2);
+		solveAndPrintErrorBy("Newton");
+		solveAndPrintConstantBy("Newton", 2);
 
 		// (2) Secant Method
 		System.out.println("--Secant Method--");
-		solveBy("Secant");
-		printConstantBy("Secant", 1.62);
+		solveAndPrintErrorBy("Secant");
+		double goldenRatio = (1.0 + Math.sqrt(5.0)) / 2.0;
+		solveAndPrintConstantBy("Secant", goldenRatio);
 
 		// (3) Parallel Chord
 		System.out.println("--Parallel Chord--");
-		solveBy("ParallelChord");
+		solveAndPrintErrorBy("ParallelChord");
+		solveAndPrintConstantBy("ParallelChord", 1);
 
 	}
 
@@ -44,19 +46,7 @@ public class Problem2_3 {
 	}
 
 	// 反復式
-	//	public static double iterationOf(String methodName, double x) {
-	//		switch (methodName) {
-	//		case "Newton":
-	//			return x - f(x) / df(x);
-	//		case "ParallelChord":
-	//			return x - f(x) / df(x0);
-	//		default:
-	//			System.out.println("Error:UndefinedMethod");
-	//			return 0.0;
-	//		}
-	//	}
-
-	// 反復式
+	// newton,pcでは第三引数にはダミーのdouble型を入力
 	public static double iterationOf(String methodName, double x, double xOld) {
 		switch (methodName) {
 		case "Newton":
@@ -90,6 +80,8 @@ public class Problem2_3 {
 			if (iter == maxIter) {
 				System.out.println("収束しません");
 			}
+
+			xApproximate = x;
 			break;
 		default:
 			for (iter = 0; iter < maxIter; iter++) {
@@ -101,9 +93,10 @@ public class Problem2_3 {
 			if (iter == maxIter) {
 				System.out.println("収束しません");
 			}
+
+			xApproximate = x;
 			break;
 		}
-		xApproximate = x;
 	}
 
 	// 誤差の表示
@@ -115,13 +108,15 @@ public class Problem2_3 {
 		double error;
 		switch (methodName) {
 		case "Secant":
-			for (int i = 1; i <= iter; i++) {
+			for (int i = 1; i < iter; i++) {
 				xNew = iterationOf(methodName, x, xOld);
 				error = Math.abs(xNew - xApproximate);
 				System.out.printf("%d, %.5e\n", i, error);
 				xOld = x;
 				x = xNew;
 			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
 			break;
 		default:
 			for (int i = 1; i <= iter; i++) {
@@ -130,10 +125,10 @@ public class Problem2_3 {
 				System.out.printf("%d, %.5e\n", i, error);
 
 			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
 			break;
 		}
-		xApproximate = 0; // 近似解の初期化
-		System.out.println();
 	}
 
 	// 定数Cの表示
@@ -147,30 +142,41 @@ public class Problem2_3 {
 		double errorOld = 0.0;
 		switch (methodName) {
 		case "Secant":
-			for (int i = 1; i <= iter; i++) {
-				x = iterationOf(methodName, x, xOld);
+			for (int i = 0; i < iter; i++) {
+				xNew = iterationOf(methodName, x, xOld);
 				error = Math.abs(x - xApproximate);
 				constant = Math.abs(error / Math.pow(errorOld, p));
-				System.out.printf("%d, %.5e, %.5e\n", i, error, constant);
+				System.out.printf("%d & %.5e \\\\ \n", i, constant);
 				errorOld = error;
 				xOld = x;
 				x = xNew;
 			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
+			break;
 		default:
-			for (int i = 1; i <= iter; i++) {
+			for (int i = 0; i < iter; i++) {
 				x = iterationOf(methodName, x, 0);
 				error = Math.abs(x - xApproximate);
 				constant = Math.abs(error / Math.pow(errorOld, p));
-				System.out.printf("%d, %.5e, %.5e\n", i, error, constant);
+				System.out.printf("%d & %.5e \\\\ \n", i, constant);
 				errorOld = error;
 			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
+			break;
 		}
-		System.out.println();
 	}
 
-	public static void solveBy(String methodName) {
+	// 近似解と誤差を出力
+	public static void solveAndPrintErrorBy(String methodName) {
 		getIterAndXBy(methodName);
 		printErrorBy(methodName);
 	}
 
+	// 収束次数を入力して値がコンスタントになることを確認
+	public static void solveAndPrintConstantBy(String methodName, double p) {
+		getIterAndXBy(methodName);
+		printConstantBy(methodName, p);
+	}
 }
