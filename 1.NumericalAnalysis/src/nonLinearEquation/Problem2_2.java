@@ -18,17 +18,20 @@ public class Problem2_2 {
 		// (1) Newton's Method
 		System.out.println("--Newton's Method--");
 		solveAndPrintErrorBy("Newton");
-		solveAndPrintConstantBy("Newton", 1.0);
+		//		solveAndPrintConstantBy("Newton", 2);
+		solveAndPrintConverganceNumberBy("Newton");
 
 		// (2) Secant Method
 		System.out.println("--Secant Method--");
 		solveAndPrintErrorBy("Secant");
-		double goldenRatio = (1.0 + Math.sqrt(5.0)) / 2.0;
-		solveAndPrintConstantBy("Secant", goldenRatio);
+		//		double goldenRatio = (1.0 + Math.sqrt(5.0)) / 2.0;
+		//		solveAndPrintConstantBy("Secant", goldenRatio);
+		solveAndPrintConverganceNumberBy("Secant");
 
 		// (3) Parallel Chord
 		System.out.println("--Parallel Chord--");
 		solveAndPrintErrorBy("ParallelChord");
+		solveAndPrintConverganceNumberBy("ParallelChord");
 
 	}
 
@@ -165,6 +168,42 @@ public class Problem2_2 {
 		}
 	}
 
+	// 収束次数pの表示
+	public static void printConvergenceNumberBy(String methodName) {
+		double xNew = x0;
+		double x = x0;
+		double xOld = x1;
+		double error;
+		double errorOld = 0.0;
+		double p; // 収束次数
+		switch (methodName) {
+		case "Secant":
+			for (int i = 0; i < iter; i++) {
+				xNew = iterationOf(methodName, x, xOld);
+				error = Math.abs(x - xApproximate);
+				p = Math.log10(Math.abs(error)) / Math.log10(Math.abs(errorOld));
+				System.out.printf("%d & %.5e \\\\ \n", i, p);
+				errorOld = error;
+				xOld = x;
+				x = xNew;
+			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
+			break;
+		default:
+			for (int i = 0; i < iter; i++) {
+				x = iterationOf(methodName, x, 0);
+				error = Math.abs(x - xApproximate);
+				p = Math.log10(Math.abs(error)) / Math.log10(Math.abs(errorOld));
+				System.out.printf("%d & %.5e \\\\ \n", i, p);
+				errorOld = error;
+			}
+			xApproximate = 0; // 近似解の初期化
+			System.out.println();
+			break;
+		}
+	}
+
 	// 近似解と誤差を出力
 	public static void solveAndPrintErrorBy(String methodName) {
 		getIterAndXBy(methodName);
@@ -175,5 +214,11 @@ public class Problem2_2 {
 	public static void solveAndPrintConstantBy(String methodName, double p) {
 		getIterAndXBy(methodName);
 		printConstantBy(methodName, p);
+	}
+
+	// 収束次数を入力して値がコンスタントになることを確認
+	public static void solveAndPrintConverganceNumberBy(String methodName) {
+		getIterAndXBy(methodName);
+		printConvergenceNumberBy(methodName);
 	}
 }

@@ -31,9 +31,7 @@ public class NewtonFractal {
 				break;
 			}
 		}
-
 		x.print();
-
 	}
 
 	// 関数f(x)
@@ -63,7 +61,6 @@ public class NewtonFractal {
 		default:
 			System.out.printf("ベクトル%dのi行目が存在しません\n", i);
 			return 0;
-
 		}
 	}
 
