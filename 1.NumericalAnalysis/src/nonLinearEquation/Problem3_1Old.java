@@ -25,7 +25,7 @@ public class Problem3_1Old {
 		int n = x.getData().length;
 		Vector f = new Vector(n);
 		for (int i = 0; i < n; i++) {
-			f.getData()[i] = Problem3.f(i, x);
+			f.getData()[i] = Problem3Old.f(x).getData()[i];
 		}
 		return f;
 	}

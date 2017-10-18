@@ -5,12 +5,10 @@ import mathlib.Matrix;
 import mathlib.Vector;
 
 public class Problem3 {
-	private static int n = 3; // 次元数
+	static int n; // 次元数
 
-	static double epsilon = 1e-10; // 許容誤差
-	static int iter; // 反復回数
+	final static double epsilon = 1e-10; // 許容誤差
 	final static int maxIter = 50; // 最大反復回数
-	static Vector xApproximate = new Vector(n); // 近似解
 
 	public static int getN() {
 		return n;
@@ -21,13 +19,11 @@ public class Problem3 {
 	}
 
 	public static void main(String[] args) {
-		//		x.print("x");
-		//		Matrix jacobian = jacobian(x);
-		//		jacobian.print("J");
-		//		Vector f = f(x);
-		//		f.print("f");
-		solveByPivotGaussianElimination();
-		System.out.println("iter = " + getIter());
+		for (n = 2; n <= 3; n++) {
+			System.out.printf("(%d)\n", n - 1);
+			System.out.printf("let n = %d\n", n);
+			solveAndPrintDetail();
+		}
 	}
 
 	// xの初期化
@@ -86,42 +82,64 @@ public class Problem3 {
 	// pivot gaussian elimination
 	public static Vector solveByPivotGaussianElimination() {
 
+		int iter; // 反復回数
 		Vector x = x();
 		Vector xOld = new Vector(n);
 		Vector y;
 		Vector f;
 		Matrix jacobian;
-
 		Vector error;
 		//		Vector errorOld = new Vector(n); // なぜ使われてないと出るのか…
 
 		for (iter = 0; iter < maxIter; iter++) {
 			f = f(x);
-			f.printf("f");
 			jacobian = jacobian(x);
-			jacobian.print("J");
 			y = GaussianElimination.pivotSolve(jacobian, f.scalarMultiply(-1)); // J * y = -f
 			x = x.add(y); // x = x + y
 			error = x.subtract(xOld); // error = x - xOld
-			x.printf("x");
 			if (error.getNorm("inf") < epsilon) {
-				xApproximate = x.copy();
 				break;
 			}
-			//			errorOld = error.copy();
 			xOld = x.copy();
 		}
-		return xApproximate;
+		if (iter < maxIter) {
+			return x;
+		} else {
+			System.out.println("最大反復回数を超えています");
+			return Vector.allNumber(n, 0);
+		}
 	}
 
 	// 反復回数を返す
 	public static int getIter() {
+		int iter; // 反復回数
+		Vector x = x();
+		Vector xOld = new Vector(n);
+		Vector y;
+		Vector f;
+		Matrix jacobian;
+		Vector error;
+		//		Vector errorOld = new Vector(n); // なぜ使われてないと出るのか…
+
+		for (iter = 0; iter < maxIter; iter++) {
+			f = f(x);
+			jacobian = jacobian(x);
+			y = GaussianElimination.pivotSolve(jacobian, f.scalarMultiply(-1)); // J * y = -f
+			x = x.add(y); // x = x + y
+			error = x.subtract(xOld); // error = x - xOld
+			if (error.getNorm("inf") < epsilon) {
+				break;
+			}
+			xOld = x.copy();
+		}
 		return iter;
 	}
 
-	// 近似解を返す
-	public static Vector getXApproximate() {
-		return xApproximate;
+	// 解と反復回数の表示
+	public static void solveAndPrintDetail() {
+		solveByPivotGaussianElimination().print("x");
+		int iter = getIter();
+		System.out.printf("iter = %d\n", iter);
 	}
 
 }

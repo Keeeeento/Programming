@@ -1,9 +1,9 @@
 package nonLinearEquation;
 
-public class Problem3_1 {
+public class Problem3_1 extends Problem3 {
 
 	public static void main(String[] args) {
-		Problem3.setN(3);
-		Problem3.solveByPivotGaussianElimination().printf();
+		n = 2;
+		solveAndPrintDetail();
 	}
 }
