@@ -8,16 +8,9 @@ public class Problem3 {
 	static int n; // 次元数
 
 	final static double epsilon = 1e-10; // 許容誤差
-	final static int maxIter = 50; // 最大反復回数
+	final static int maxIter = (int) 5e+10; // 最大反復回数
 
-	public static int getN() {
-		return n;
-	}
-
-	public static void setN(int n) {
-		Problem3.n = n;
-	}
-
+	// main method
 	public static void main(String[] args) {
 		for (n = 2; n <= 3; n++) {
 			System.out.printf("(%d)\n", n - 1);
@@ -135,11 +128,69 @@ public class Problem3 {
 		return iter;
 	}
 
+	// 近似解を返す
+	public static Vector getApproximateSolution() {
+
+		int iter; // 反復回数
+		Vector x = x();
+		Vector xOld = new Vector(n);
+		Vector y;
+		Vector f;
+		Matrix jacobian;
+		Vector error;
+		//		Vector errorOld = new Vector(n); // なぜ使われてないと出るのか…
+
+		for (iter = 0; iter < maxIter; iter++) {
+			f = f(x);
+			jacobian = jacobian(x);
+			y = GaussianElimination.pivotSolve(jacobian, f.scalarMultiply(-1)); // J * y = -f
+			x = x.add(y); // x = x + y
+			error = x.subtract(xOld); // error = x - xOld
+			if (error.getNorm("inf") < epsilon) {
+				break;
+			}
+			xOld = x.copy();
+		}
+		return x;
+
+	}
+
 	// 解と反復回数の表示
 	public static void solveAndPrintDetail() {
-		solveByPivotGaussianElimination().print("x");
+		//		Vector x = x();
+		//		x.print("x");
+		//		Matrix jacobian = jacobian(x);
+		//		jacobian.print("J");
+		solveByPivotGaussianElimination().printf("x");
 		int iter = getIter();
 		System.out.printf("iter = %d\n", iter);
+		double p = getOrderOfConvergence();
+		System.out.printf("p = %.10e\n", p);
+	}
+
+	// 収束次数
+	public static double getOrderOfConvergence() {
+
+		int iter; // 反復回数
+		Vector x = x();
+		Vector xOld = new Vector(n);
+		Vector xApproximate = getApproximateSolution();
+		Vector y;
+		Vector f;
+		Matrix jacobian;
+		double p = 0.0;
+
+		for (iter = 0; iter < getIter(); iter++) {
+			f = f(x);
+			jacobian = jacobian(x);
+			y = GaussianElimination.pivotSolve(jacobian, f.scalarMultiply(-1)); // J * y = -f
+			x = x.add(y); // x = x + y
+			p = Math.log10(x.subtract(xApproximate).getNorm("inf"))
+					/ Math.log10(xOld.subtract(xApproximate).getNorm("inf"));
+			xOld = x.copy();
+
+		}
+		return p;
 	}
 
 }

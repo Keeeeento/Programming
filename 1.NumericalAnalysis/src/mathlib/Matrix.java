@@ -77,7 +77,6 @@ public class Matrix {
 			for (int j = 0; j < m; j++) {
 				if (this.data[i][j] >= 0) {
 					System.out.printf(" %d ", (int) this.data[i][j]);
-
 				} else {
 					System.out.printf("%d ", (int) this.data[i][j]);
 				}
@@ -90,6 +89,52 @@ public class Matrix {
 	public void printInt(String str) {
 		System.out.println(str + " = ");
 		this.printInt();
+	}
+
+	// TeX用
+	public void printTeX() {
+		System.out.println("   \\begin{pmatrix}");
+		for (int i = 0; i < n; i++) {
+			System.out.print("      ");
+			for (int j = 0; j < m - 1; j++) {
+				System.out.printf("%.10f & ", this.data[i][j]);
+			}
+			if (i == n - 1) {
+				System.out.printf("%.10f\n", this.data[i][m - 1]);
+
+			} else {
+				System.out.printf("%.10f \\\\ \n", this.data[i][m - 1]);
+			}
+		}
+		System.out.println("   \\end{pmatrix}");
+	}
+
+	public void printTeX(String str) {
+		System.out.println(str + " = ");
+		this.printTeX();
+	}
+
+	// Tex用整数表示
+	public void printTeXInt() {
+		System.out.println("   \\begin{pmatrix}");
+		for (int i = 0; i < n; i++) {
+			System.out.print("      ");
+			for (int j = 0; j < m - 1; j++) {
+				System.out.printf("%d & ", (int) this.data[i][j]);
+			}
+			if (i == n - 1) {
+				System.out.printf("%d\n", (int) this.data[i][m - 1]);
+
+			} else {
+				System.out.printf("%d \\\\ \n ", (int) this.data[i][m - 1]);
+			}
+		}
+		System.out.println("   \\end{pmatrix}");
+	}
+
+	public void printTeXInt(String str) {
+		System.out.println(str + " = ");
+		this.printTeXInt();
 	}
 
 	// n×m行列(全要素0)
@@ -288,7 +333,7 @@ public class Matrix {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				for (int k = 0; k < n; k++) {
-					b.data[i][j] = a.data[i][k] * this.data[k][j];
+					b.data[i][j] += this.data[i][k] * a.data[k][j];
 				}
 			}
 		}
@@ -558,8 +603,8 @@ public class Matrix {
 	public Matrix inverse(Matrix a) {
 		int n = a.n;
 		Matrix inv = new Matrix(n);
-		Matrix l = LUDecomposition.l(a);
-		Matrix u = LUDecomposition.u(a);
+		Matrix l = LUDecomposition.getL(a);
+		Matrix u = LUDecomposition.getU(a);
 
 		Vector x = new Vector(n);
 		Vector y = new Vector(n);
@@ -577,8 +622,8 @@ public class Matrix {
 	public Matrix inverse() {
 		int n = this.n;
 		Matrix inv = new Matrix(n);
-		Matrix l = LUDecomposition.l(this);
-		Matrix u = LUDecomposition.u(this);
+		Matrix l = LUDecomposition.getL(this);
+		Matrix u = LUDecomposition.getU(this);
 
 		Vector x = new Vector(n);
 		Vector y = new Vector(n);
@@ -594,12 +639,18 @@ public class Matrix {
 	}
 
 	// 条件数
-	public double getConditionNumberOfOneNorm() {
-		return this.getManhattanNorm() * inverse(this).getManhattanNorm();
-	}
+	// public double getConditionNumberOfOneNorm() {
+	// return this.getManhattanNorm() * inverse(this).getManhattanNorm();
+	// }
+	//
+	// public double getConditionNumberOfInfinityNorm() {
+	// return this.getInfinityNorm() * inverse(this).getInfinityNorm();
+	// }
+	//
 
-	public double getConditionNumberOfInfinityNorm() {
-		return this.getInfinityNorm() * inverse(this).getInfinityNorm();
+	// 条件数
+	public double getConditionNumber(int normNumber) {
+		return this.getNorm(normNumber) * inverse(this).getNorm(normNumber);
 	}
 
 	// 対角行列
@@ -636,8 +687,8 @@ public class Matrix {
 		Matrix upper = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
+				upper.data[i][j] = this.data[i][j];
 				if (i < j) {
-					upper.data[i][j] = this.data[i][j];
 				}
 			}
 		}
@@ -647,7 +698,7 @@ public class Matrix {
 	// 行列式
 	public double getDeterminant() {
 		int n = this.getData().length;
-		Matrix u = LUDecomposition.u(this);
+		Matrix u = LUDecomposition.getU(this);
 		double det = 1;
 
 		for (int i = 0; i < n; i++) {
@@ -660,10 +711,14 @@ public class Matrix {
 	public boolean isDiagonalDominant() {
 		boolean bool = true;
 		for (int i = 0; i < n; i++) {
+			double sum = 0.0;
 			for (int j = 0; j < n; j++) {
-				if (Math.abs(this.data[i][i]) < Math.abs(this.data[i][j])) {
-					bool = false;
+				if (i != j) {
+					sum += this.getData()[i][j];
 				}
+			}
+			if (Math.abs(this.data[i][i]) < sum) {
+				bool = false;
 			}
 		}
 		return bool;
@@ -673,10 +728,14 @@ public class Matrix {
 	public boolean isStrictlyDiagonalDominant() {
 		boolean bool = true;
 		for (int i = 0; i < n; i++) {
+			double sum = 0.0;
 			for (int j = 0; j < n; j++) {
-				if (Math.abs(this.data[i][i]) < Math.abs(this.data[i][j])) {
-					bool = false;
+				if (i != j) {
+					sum += this.getData()[i][j];
 				}
+			}
+			if (Math.abs(this.data[i][i]) <= sum) {
+				bool = false;
 			}
 		}
 		return bool;
@@ -690,7 +749,6 @@ public class Matrix {
 			if (a.getDeterminant() <= 0) {
 				bool = false;
 				break;
-
 			}
 			a.print();
 		}
@@ -698,12 +756,12 @@ public class Matrix {
 	}
 
 	// 対称帯行列の作成
-	public void symmetricBand(double diagnal, double diagnal2, double diagnal3) {
+	public void symmetricBand(double d, double diagnal2, double diagnal3) {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				switch (Math.abs(i - j)) {
 				case 0:
-					this.getData()[i][j] = diagnal;
+					this.getData()[i][j] = d;
 					break;
 				case 1:
 					this.getData()[i][j] = diagnal2;
@@ -718,17 +776,29 @@ public class Matrix {
 		}
 	}
 
-	public void symmetricBand(double diagnal, double diagnal2) {
-		this.symmetricBand(diagnal, diagnal2, 0);
+	public void symmetricBand(double d, double d2) {
+		this.symmetricBand(d, d2, 0);
 	}
 
-	public void symmetricBand(double diagnal) {
-		this.symmetricBand(diagnal, 0, 0);
+	public void symmetricBand(double d) {
+		this.symmetricBand(d, 0, 0);
 	}
 
-	public static Matrix symmetricBand(int size, double diagnal, double diagnal2, double diagnal3) {
+	public static Matrix symmetricBand(int size, double d, double d2, double d3) {
 		Matrix a = new Matrix(size);
-		a.symmetricBand(diagnal, diagnal2, diagnal3);
+		a.symmetricBand(d, d2, d3);
+		return a;
+	}
+
+	public static Matrix symmetricBand(int size, double d, double d2) {
+		Matrix a = new Matrix(size);
+		a.symmetricBand(d, d2, 0);
+		return a;
+	}
+
+	public static Matrix symmetricBand(int size, double d) {
+		Matrix a = new Matrix(size);
+		a.symmetricBand(d, 0, 0);
 		return a;
 	}
 
@@ -770,5 +840,23 @@ public class Matrix {
 
 		return lambda;
 	}
+
+	// 対称行列か否か(Machine Epsilon評価)
+	public boolean isSymmetric() {
+		boolean bool = true;
+		double epsilon = 1e-16;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i != j && this.getData()[i][j] - this.getDeterminant() >= epsilon) {
+					bool = false;
+				}
+			}
+		}
+		return bool;
+	}
+	//
+	//	public boolean isSymmetricPositiveDefinite() {
+	//
+	//	}
 
 }

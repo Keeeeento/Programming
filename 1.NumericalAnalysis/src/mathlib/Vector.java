@@ -37,7 +37,7 @@ public class Vector {
 
 	// コンソール表示
 	public void print() {
-		for (int i = 0; i < this.data.length; i++) {
+		for (int i = 0; i < n; i++) {
 			System.out.printf("%.10f ", this.data[i]);
 		}
 		System.out.println();
@@ -51,8 +51,8 @@ public class Vector {
 
 	// 指数表記
 	public void printf() {
-		for (int i = 0; i < this.data.length; i++) {
-			System.out.printf("%.3e ", this.data[i]);
+		for (int i = 0; i < n; i++) {
+			System.out.printf("%.10e ", this.data[i]);
 		}
 		System.out.println();
 		System.out.println();
@@ -61,6 +61,37 @@ public class Vector {
 	public void printf(String str) {
 		System.out.println(str + " = ");
 		this.printf();
+	}
+
+	// 整数表記
+	public void printInt() {
+		for (int i = 0; i < n; i++) {
+			System.out.printf("%d ", (int) this.data[i]);
+		}
+		System.out.println();
+	}
+
+	public void printInt(String str) {
+		System.out.println(str + " = ");
+		this.printInt();
+	}
+
+	// TeX用
+	public void printTeX() {
+
+		System.out.println("   \\left(");
+		System.out.println("      \\begin{array}{c}");
+		for (int i = 0; i < n - 1; i++) {
+			System.out.printf("         %.16f \\\\ \n", this.data[i]);
+		}
+		System.out.printf("         %.16f\n ", this.data[n - 1]);
+		System.out.println("      \\end{array}");
+		System.out.println("   \\right)");
+	}
+
+	public void printTeX(String str) {
+		System.out.println(str + " = ");
+		this.printTeX();
 	}
 
 	// コピー

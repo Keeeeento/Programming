@@ -126,7 +126,7 @@ public class GaussianElimination {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		forwardElimination(a2, b2);
-		System.out.println("operation = " + operation);
+		//		System.out.println("operation = " + operation);
 		return backwardSubstitution(a2, b2);
 	}
 
@@ -135,7 +135,7 @@ public class GaussianElimination {
 		Matrix a2 = a.copy(a);
 		Vector b2 = b.copy(b);
 		pivotingForwardElimination(a2, b2);
-		System.out.println("operation = " + operation);
+		//		System.out.println("operation = " + operation);
 		return backwardSubstitution(a2, b2);
 	}
 }
