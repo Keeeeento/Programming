@@ -4,20 +4,19 @@ public class GaussSeidel extends SOR {
 
 	// @return x
 	public static Vector solve(Matrix a, Vector b) {
-		return SOR.solve(a, b, 1.0); // SOR法において ω = 1
+		SOR.setOmega(1);
+		return SOR.solve(a, b); // SOR法において ω = 1
 	}
 
 	// @return iteration
 	public static int getIteration(Matrix a, Vector b) {
-		return SOR.getIter(a, b, 1.0); // SOR法において ω = 1
+		SOR.setOmega(1);
+		return SOR.getIter(a, b); // SOR法において ω = 1
 	}
 
-	// 収束判定条件:1ノルム相対誤差による解
-	public static Vector solveWithOneNorm(Matrix a, Vector b) {
+	private static void solve(Matrix a, Vector x, Vector b, int iteration) {
 		int n = b.getData().length;
-		Vector x = new Vector(n);
 		Vector xOld = new Vector(n);
-		int iteration;
 		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
@@ -28,14 +27,12 @@ public class GaussSeidel extends SOR {
 				}
 				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
 			}
-			if (xOld.getRelativeErrorOfOneNorm(x) <= epsilon) {
+			if (xOld.getRelativeError(normNumber, x) <= epsilon) {
 				break;
 			} else {
 				xOld = x.copy();
 			}
 		}
-
-		return x;
 
 	}
 

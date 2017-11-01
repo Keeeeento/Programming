@@ -1,5 +1,10 @@
 package mathlib;
 
+/**
+ * @author Kento
+ *
+ */
+
 public class Vector {
 	private double[] data;
 	private int n;
@@ -82,16 +87,17 @@ public class Vector {
 		System.out.println("   \\left(");
 		System.out.println("      \\begin{array}{c}");
 		for (int i = 0; i < n - 1; i++) {
-			System.out.printf("         %.16f \\\\ \n", this.data[i]);
+			System.out.printf("         %.16f \\\\[10pt] \n", this.data[i]);
 		}
 		System.out.printf("         %.16f\n ", this.data[n - 1]);
 		System.out.println("      \\end{array}");
-		System.out.println("   \\right)");
+		System.out.print("   \\right)");
 	}
 
 	public void printTeX(String str) {
-		System.out.println(str + " = ");
+		System.out.println("$$\\bm{" + str + "} = ");
 		this.printTeX();
+		System.out.println("$$");
 	}
 
 	// コピー
@@ -237,51 +243,21 @@ public class Vector {
 		return norm;
 	}
 
-	// 1ノルム絶対誤差
-	public double getAbsoluteErrorOfOneNorm(Vector x) {
-		return subtract(x, this).getManhattanNorm();
-	}
-
-	// 2ノルム絶対誤差
-	public double getAbsoluteErrorOfTwoNorm(Vector x) {
-		return subtract(x, this).getEuclideanNorm();
-	}
-
-	// 無限大ノルム絶対誤差
-	public double getAbsoluteErrorOfInfinityNorm(Vector x) {
-		return subtract(x, this).getInfinityNorm();
-	}
-
-	// nノルム絶対誤差
+	/**絶対誤差ノルム
+	 * @param normNumber
+	 * @param x
+	 * @return
+	 */
 	public double getAbsoluteError(double normNumber, Vector x) {
 		return subtract(x, this).getNorm(normNumber);
 	}
 
-	public double getAbsoluteError(String normNumber, Vector x) {
-		return subtract(x, this).getNorm(normNumber);
-	}
-
-	// 1ノルム相対誤差
-	public double getRelativeErrorOfOneNorm(Vector x) {
-		return this.getAbsoluteErrorOfOneNorm(x) / x.getManhattanNorm();
-	}
-
-	// 2ノルム相対誤差
-	public double getRelativeErrorOfTwoNorm(Vector x) {
-		return this.getAbsoluteErrorOfTwoNorm(x) / x.getEuclideanNorm();
-	}
-
-	// 無限大ノルムの相対誤差
-	public double getRelativeErrorOfInfinityNorm(Vector x) {
-		return this.getAbsoluteErrorOfInfinityNorm(x) / x.getInfinityNorm();
-	}
-
-	// nノルムの相対誤差
+	/**相対誤差ノルム
+	 * @param normNumber
+	 * @param x
+	 * @return
+	 */
 	public double getRelativeError(double normNumber, Vector x) {
-		return this.getAbsoluteError(normNumber, x) / x.getNorm(normNumber);
-	}
-
-	public double getRelativeError(String normNumber, Vector x) {
 		return this.getAbsoluteError(normNumber, x) / x.getNorm(normNumber);
 	}
 
@@ -290,51 +266,23 @@ public class Vector {
 		return this.subtract(b, a.multiply(a, this));
 	}
 
-	// 1ノルム絶対残差
-	public double getAbsoluteResidualOfOneNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getManhattanNorm();
-	}
-
-	// 2ノルム絶対残差
-	public double getAbsoluteResidualOfTwoNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getEuclideanNorm();
-	}
-
-	// 無限大ノルム絶対残差
-	public double getAbsoluteResidualOfInfinityNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getInfinityNorm();
-	}
-
-	// nノルム絶対残差
+	/**絶対残差ノルム
+	 * @param normNumber
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public double getAbsoluteResidual(double normNumber, Matrix a, Vector b) {
 		return this.residual(a, b).getNorm(normNumber);
 	}
 
-	public double getAbsoluteResidual(String normNumber, Matrix a, Vector b) {
-		return this.residual(a, b).getNorm(normNumber);
-	}
-
-	// 1ノルム相対残差
-	public double getRelativeResidualOfOneNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getManhattanNorm() / b.getManhattanNorm();
-	}
-
-	// 2ノルム相対残差
-	public double getRelativeResidualOfTwoNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getEuclideanNorm() / b.getEuclideanNorm();
-	}
-
-	// 無限大ノルム相対残差
-	public double getRelativeResidualOfInfinityNorm(Matrix a, Vector b) {
-		return this.residual(a, b).getInfinityNorm() / b.getInfinityNorm();
-	}
-
-	// nノルム相対残差
+	/**相対残差ノルム
+	 * @param normNumber
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public double getRelativeResidual(double normNumber, Matrix a, Vector b) {
-		return this.residual(a, b).getNorm(normNumber) / b.getNorm(normNumber);
-	}
-
-	public double getRelativeResidual(String normNumber, Matrix a, Vector b) {
 		return this.residual(a, b).getNorm(normNumber) / b.getNorm(normNumber);
 	}
 

@@ -1,5 +1,10 @@
 package mathlib;
 
+/**
+ * @author Kento
+ *
+ */
+
 public class Matrix {
 	private int n;
 	private int m;
@@ -129,12 +134,13 @@ public class Matrix {
 				System.out.printf("%d \\\\ \n ", (int) this.data[i][m - 1]);
 			}
 		}
-		System.out.println("   \\end{pmatrix}");
+		System.out.print("   \\end{pmatrix}");
 	}
 
 	public void printTeXInt(String str) {
-		System.out.println(str + " = ");
+		System.out.println("$$" + str + " = ");
 		this.printTeXInt();
+		System.out.println("$$");
 	}
 
 	// n×m行列(全要素0)

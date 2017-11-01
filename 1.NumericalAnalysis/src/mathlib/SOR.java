@@ -2,8 +2,28 @@ package mathlib;
 
 public class SOR extends StationaryIterativeMethod {
 
-	// 返り値のない一般的な解法
-	private static void solve(Matrix a, Vector x, Vector b, double omega, int iteration) {
+	/**
+	 * 緩和係数
+	 * 初期値0.5
+	 */
+	private static double omega = 0.5;
+
+	public static double getOmega() {
+		return omega;
+	}
+
+	public static void setOmega(double omega) {
+		SOR.omega = omega;
+	}
+
+	/**solve
+	 * 一般的なprivagteメソッド
+	 * @param a
+	 * @param x
+	 * @param b
+	 * @param iteration
+	 */
+	private static void solve(Matrix a, Vector x, Vector b, int iteration) {
 		int n = a.getN();
 		Vector xOld = new Vector(n);
 		Vector xTilde = new Vector(n);
@@ -23,26 +43,37 @@ public class SOR extends StationaryIterativeMethod {
 			iteration++;
 			xOld = x.copy();
 			xTilde = xTildeOld.copy();
-		} while (xOld.getRelativeErrorOfOneNorm(x) > epsilon || iteration < maxIterationNumber);
+		} while (xOld.getRelativeError(normNumber, x) > epsilon || iteration < maxIterationNumber);
 
 	}
 
-	// @return x
-	public static Vector solve(Matrix a, Vector b, double omega) {
+	/**solve
+	 * @param a
+	 * @param b
+	 * @return x 解を求める
+	 */
+	public static Vector solve(Matrix a, Vector b) {
 		Vector x = new Vector(a.getN());
-		solve(a, x, b, omega, 0);
+		solve(a, x, b, 0);
 		return x;
 	}
 
-	// @return iteration
-	public static int getIter(Matrix a, Vector b, double omega) {
+	/**getIter
+	 * @param a
+	 * @param b
+	 * @return iteration 反復回数
+	 */
+	public static int getIter(Matrix a, Vector b) {
 		int iteration = 0;
-		solve(a, new Vector(a.getN()), b, omega, iteration);
+		solve(a, new Vector(a.getN()), b, iteration);
 		return iteration;
 	}
 
-	// Check
 	public static void main(String[] args) {
-	}
+		Matrix a = new Matrix(new double[][] { { 3, 1, 1 }, { 1, 3, 1 }, { 1, 1, 3 } });
+		Vector b = new Vector(new double[] { 0, 4, 6 });
+		solve(a, b).print("X");
+		System.out.println(getIter(a, b));
 
+	}
 }
