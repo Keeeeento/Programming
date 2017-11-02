@@ -1,7 +1,6 @@
 package mathlib;
 
 public class Jacobi extends StationaryIterativeMethod {
-	static int iteration; // 反復回数
 
 	/**solve
 	 * 一般的なprivateな解法
@@ -11,7 +10,7 @@ public class Jacobi extends StationaryIterativeMethod {
 	 * @param iteration
 	 * @return なし
 	 */
-	private static void solve(Matrix a, Vector x, Vector b, int iteration) {
+	private static void solve(Matrix a, Vector x, Vector b) {
 		int n = a.getN();
 		Vector xOld = new Vector(n);
 		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
@@ -58,11 +57,10 @@ public class Jacobi extends StationaryIterativeMethod {
 	 */
 	public static Vector solve(Matrix a, Vector b) {
 		int n = a.getN();
-		int iteration = 0;
 		Matrix a2 = a.copy();
 		Vector b2 = b.copy();
 		Vector x = new Vector(n);
-		solve(a2, x, b2, iteration);
+		solve(a2, x, b2);
 		return x;
 
 	}
@@ -75,11 +73,10 @@ public class Jacobi extends StationaryIterativeMethod {
 	 */
 	public static int getIter(Matrix a, Vector b) {
 		int n = a.getN();
-		int iteration = 0;
 		Matrix a2 = a.copy();
 		Vector b2 = b.copy();
 		Vector x = new Vector(n);
-		solve(a2, x, b2, iteration);
+		solve(a2, x, b2);
 		return iteration;
 	}
 
@@ -89,7 +86,7 @@ public class Jacobi extends StationaryIterativeMethod {
 		Matrix a2 = a.copy();
 		Vector b2 = b.copy();
 		Vector x = new Vector(n);
-		solve(a2, x, b2, iteration);
+		solve(a2, x, b2);
 		return a2;
 	}
 

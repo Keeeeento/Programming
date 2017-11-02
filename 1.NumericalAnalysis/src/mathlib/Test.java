@@ -27,17 +27,6 @@ public class Test {
 		//		CholeskyDecomposition.solve(a, b).print("CholeskyDecomposition");
 
 		a.printTeX("a");
-
-		System.out.println(returnAddedX(1));
-
 	}
 
-	public static void changeX(double x) {
-		x += 1.0;
-	}
-
-	public static double returnAddedX(double x) {
-		changeX(x);
-		return x;
-	}
 }

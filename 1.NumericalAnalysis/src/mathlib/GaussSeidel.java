@@ -1,20 +1,20 @@
 package mathlib;
 
-public class GaussSeidel extends SOR {
+public class GaussSeidel extends SuccessiveOverRelaxation {
 
 	// @return x
 	public static Vector solve(Matrix a, Vector b) {
-		SOR.setOmega(1);
-		return SOR.solve(a, b); // SOR法において ω = 1
+		SuccessiveOverRelaxation.setOmega(1);
+		return SuccessiveOverRelaxation.solve(a, b); // SOR法において ω = 1
 	}
 
 	// @return iteration
 	public static int getIteration(Matrix a, Vector b) {
-		SOR.setOmega(1);
-		return SOR.getIter(a, b); // SOR法において ω = 1
+		SuccessiveOverRelaxation.setOmega(1);
+		return SuccessiveOverRelaxation.getIter(a, b); // SOR法において ω = 1
 	}
 
-	private static void solve(Matrix a, Vector x, Vector b, int iteration) {
+	private static void solve(Matrix a, Vector x, Vector b) {
 		int n = b.getData().length;
 		Vector xOld = new Vector(n);
 		for (iteration = 0; iteration < maxIterationNumber; iteration++) {

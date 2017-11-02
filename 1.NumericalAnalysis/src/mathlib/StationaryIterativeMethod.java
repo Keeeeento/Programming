@@ -7,27 +7,19 @@ public class StationaryIterativeMethod {
 	 */
 	protected static double epsilon = 1e-14;
 
-	public static double getEpsilon() {
-		return epsilon;
-	}
+	protected static int n = 5;
 
-	public static void setEpsilon(double epsilon) {
-		StationaryIterativeMethod.epsilon = epsilon;
-	}
+	/**
+	 * 反復回数
+	 * 初期化されていない
+	 */
+	protected static int iteration;
 
 	/**
 	 * 最大反復回数
-	 * 初期値1e+10
+	 * 初期値1e+3
 	 */
-	protected static int maxIterationNumber = (int) (1e+10);
-
-	public static int getMaxIterationNumber() {
-		return maxIterationNumber;
-	}
-
-	public static void setMaxIterationNumber(int maxIterationNumber) {
-		StationaryIterativeMethod.maxIterationNumber = maxIterationNumber;
-	}
+	protected static int maxIterationNumber = (int) (1e+3);
 
 	/**
 	 * ノルム
@@ -35,12 +27,17 @@ public class StationaryIterativeMethod {
 	 */
 	protected static double normNumber = 0;
 
-	public static double getNormNumber() {
-		return normNumber;
+	/**
+	 * 解ベクトルx
+	 */
+	protected static Vector x = new Vector(n);
+
+	public static Vector getX() {
+		return x;
 	}
 
-	public static void setNormNumber(double normNumber) {
-		StationaryIterativeMethod.normNumber = normNumber;
+	public static void setX(Vector x) {
+		StationaryIterativeMethod.x = x;
 	}
 
 	public static Matrix getIterativeMatrixOf(Matrix a) {
