@@ -294,4 +294,5 @@ public class Vector {
 		b.getData()[0] += 1e-3 * b.getData()[0];
 		return b.add(delta);
 	}
+
 }
