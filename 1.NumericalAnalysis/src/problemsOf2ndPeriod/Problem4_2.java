@@ -4,7 +4,7 @@ import mathlib.CholeskyDecomposition;
 import mathlib.Matrix;
 import mathlib.Vector;
 
-public class Problem4_2 {
+public final class Problem4_2 {
 
 	public static void main(String[] args) {
 		double aData[][] = {

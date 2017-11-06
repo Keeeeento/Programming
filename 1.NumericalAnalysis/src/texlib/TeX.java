@@ -64,4 +64,26 @@ public class TeX {
 		System.out.println("   \\end{center}");
 		System.out.printf("\\end{table}\n\n");
 	}
+
+	public static void beginDocument() {
+		System.out.println("\\documentclass[12pt, a4paper]{jsarticle}\r\n" +
+				"\r\n" +
+				"\\usepackage{amsmath}\r\n" +
+				"\\usepackage{amssymb}\r\n" +
+				"\\usepackage{bm}\r\n" +
+				"\r\n" +
+				"\\usepackage[top=30truemm,bottom=30truemm,left=20truemm,right=20truemm]{geometry}\r\n" +
+				"\r\n" +
+				"\r\n" +
+				"\\newcommand{\\plus}{\\raisebox{.4\\height}{\\scalebox{.6}{+}}}\r\n" +
+				"\\newcommand{\\minus}{\\raisebox{.4\\height}{\\scalebox{.8}{-}}}\r\n" +
+				"\\title{演習課題$5$ \\\\ 連立一次方程式の反復法}\r\n" +
+				"\\author{1416078 \\ 中村 謙斗}\r\n" +
+				"\\date{}" +
+				"\\begin{document}" + "\r\n" + "\\maketitle");
+	}
+
+	public static void endDocument() {
+		System.out.println("\\end{document}");
+	}
 }

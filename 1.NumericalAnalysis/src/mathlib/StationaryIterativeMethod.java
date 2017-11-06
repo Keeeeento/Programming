@@ -2,16 +2,12 @@ package mathlib;
 
 public class StationaryIterativeMethod {
 
-	protected static double epsilon = 1e-14;
-
-	//	protected static int n = 5;
-	protected static Vector x0;
-
-	protected static int iteration = 0;
-
-	protected static int maxIter = (int) (1e+3);
-
-	protected static double norm = 2;
+	protected double epsilon;
+	protected int n;
+	protected Vector x, x0;
+	protected int iteration;
+	protected int max_iteration;
+	protected double norm;
 
 	//以下のコンストラクタの部分は使用していない(今後に期待)
 
@@ -21,19 +17,21 @@ public class StationaryIterativeMethod {
 	public StationaryIterativeMethod() {
 		this.epsilon = 1e-14;
 		this.norm = 0;
-		this.maxIter = (int) 1e+3;
+		this.max_iteration = (int) 1e+3;
 	}
 
 	/**
 	 * コンストラクタ
-	 * @param epsilon
-	 * @param norm
-	 * @param maxIter
+	 * @param epsilon マシンイプシロン
+	 * @param norm ノルム数
+	 * @param max_iteration 最大反復回数
+	 * @param x0 初期ベクトル
 	 */
-	public StationaryIterativeMethod(double epsilon, double norm, int maxIter) {
-		StationaryIterativeMethod.epsilon = epsilon;
-		StationaryIterativeMethod.norm = norm;
-		StationaryIterativeMethod.maxIter = maxIter;
+	public StationaryIterativeMethod(double epsilon, double norm, int max_iteration, Vector x0) {
+		this.epsilon = epsilon;
+		this.norm = norm;
+		this.max_iteration = max_iteration;
+		this.x0 = x0;
 	}
 
 	//	public static Matrix getIterativeMatrixOf(Matrix a) {
@@ -60,6 +58,10 @@ public class StationaryIterativeMethod {
 	//		}
 	//
 	//		return c;
+	//	}
+
+	//	public int getIter(Matrix a, Vector b) {
+	//		return 0;
 	//	}
 
 }

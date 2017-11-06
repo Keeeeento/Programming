@@ -850,7 +850,7 @@ public class Matrix {
 	// 対称行列か否か(Machine Epsilon評価)
 	public boolean isSymmetric() {
 		boolean bool = true;
-		double epsilon = 1e-16;
+		double epsilon = 1e-15;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (i != j && this.getData()[i][j] - this.getDeterminant() >= epsilon) {

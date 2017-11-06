@@ -2,28 +2,58 @@ package mathlib;
 
 public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 
-	private static int n;
-	private static Vector x;
-
 	/**
 	 * 緩和係数
 	 */
+	protected double omega;
 
-	protected static double omega = 1.3;
-
-	/**solve
-	 * 一般的なprivagteメソッド
-	 * @param a
-	 * @param x
-	 * @param b
+	/**
+	 * デフォルトコンストラクタ
+	 *  omega 初期値 1.5
 	 */
-	private static void sor(Matrix a, Vector b) {
+	public SuccessiveOverRelaxation() {
+		super();
+		this.omega = 1.5;
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param epsilon マシンイプシロン
+	 * @param norm ノルム数
+	 * @param maxIter 最大反復回数
+	 * @param omega 緩和係数
+	 */
+	public SuccessiveOverRelaxation(double epsilon, double norm, int maxIter, Vector x0, double omega) {
+		super(epsilon, norm, maxIter, x0);
+		this.omega = omega;
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param conditions
+	 * @param omega 緩和係数
+	 */
+	public SuccessiveOverRelaxation(StationaryIterativeMethod conditions, double omega) {
+		this.epsilon = conditions.epsilon;
+		this.norm = conditions.norm;
+		this.max_iteration = conditions.max_iteration;
+		this.x0 = conditions.x0;
+		this.omega = omega;
+	}
+
+	/**
+	 * solve
+	 * @param a 係数行列
+	 * @param b 定数項ベクトル
+	 * @return x 未知数ベクトル 近似解
+	 */
+	public Vector solve(Matrix a, Vector b) {
 		n = a.getN();
 		x = x0.copy();
 		Vector xOld = new Vector(n);
 		Vector xTilde = new Vector(n);
 
-		for (iteration = 0; iteration < maxIter; iteration++) {
+		for (iteration = 0; iteration < max_iteration; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
 				for (int j = 0; j < n; j++) {
@@ -41,6 +71,7 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 			}
 			xOld = x.copy();
 		}
+		return x;
 	}
 	//
 	//	private void sor(Matrix a, Vector b) {
@@ -74,29 +105,30 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 	 * @param b
 	 * @return x 解を求める
 	 */
-	public static Vector solve(Matrix a, Vector b) {
-		sor(a, b);
-		return x;
-	}
+	//	public Vector solve(Matrix a, Vector b) {
+	//		sor(a, b);
+	//		return x;
+	//	}
 
 	/**getIter
-	 * @param a
-	 * @param b
+	 * 最大反復回数時 0
+	 * @param a 係数行列
+	 * @param b 定数項ベクトル
 	 * @return iteration 反復回数
 	 */
-	public static int getIter(Matrix a, Vector b) {
-		sor(a, b);
-		if (iteration == maxIter) {
+	public int getIter(Matrix a, Vector b) {
+		this.solve(a, b);
+		if (iteration == max_iteration) {
 			return 0;
 		}
 		return iteration;
 	}
 
 	public static void main(String[] args) {
+		SuccessiveOverRelaxation sor = new SuccessiveOverRelaxation();
 		Matrix a = new Matrix(new double[][] { { 3, 2, 1 }, { 1, 3, -2 }, { 2, -1, 4 } });
 		Vector b = new Vector(new double[] { 4, 6, -3 });
-		solve(a, b).printTeX("x");
-		System.out.println(getIter(a, b));
-
+		sor.solve(a, b).printTeX("x");
+		System.out.println(sor.getIter(a, b));
 	}
 }
