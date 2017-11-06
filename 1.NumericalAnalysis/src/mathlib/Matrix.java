@@ -5,7 +5,7 @@ package mathlib;
  *
  */
 
-public class Matrix {
+public class Matrix extends LinearEquation {
 	private int n;
 	private int m;
 	private double[][] data;
@@ -819,10 +819,14 @@ public class Matrix {
 		return a;
 	}
 
-	// スペクトル半径を求める
+	/**
+	 * getSpecturalRedius
+	 * スペクトル半径を求める
+	 * 収束判定条件あり
+	 * @param なし
+	 * @return lambda スペクトル半径(絶対値最大の固有値)
+	 */
 	public double getSpectralRadius() {
-		int maxIterationNumber = (int) (1e+10);
-		double epsilon = 1e-16;
 		int n = this.getData().length;
 		double lambda = 0.0;
 		double lambdaOld = 0.0;
@@ -831,7 +835,7 @@ public class Matrix {
 
 		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
 
-		for (int iteration = 0; iteration < maxIterationNumber; iteration++) {
+		for (int iteration = 0; iteration < max_iteration; iteration++) {
 			x = this.multiply(xOld);
 			lambda = Math.abs(Vector.innerProduct(xOld, x));
 
@@ -845,6 +849,59 @@ public class Matrix {
 		}
 
 		return lambda;
+	}
+	// スペクトル半径を求める(旧バージョン)
+	//	public double getSpectralRadius() {
+	//		int maxIterationNumber = (int) (1e+10);
+	//		double epsilon = 1e-16;
+	//		int n = this.getData().length;
+	//		double lambda = 0.0;
+	//		double lambdaOld = 0.0;
+	//		Vector xOld = new Vector(n);
+	//		Vector x = new Vector(n);
+	//
+	//		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+	//
+	//		for (int iteration = 0; iteration < maxIterationNumber; iteration++) {
+	//			x = this.multiply(xOld);
+	//			lambda = Math.abs(Vector.innerProduct(xOld, x));
+	//
+	//			if (Math.abs(lambda - lambdaOld) < epsilon) {
+	//				break;
+	//			}
+	//			// System.out.println(lambda);
+	//			lambdaOld = lambda;
+	//			xOld = x.scalarMultiply(1.0 / x.getNorm(2));
+	//
+	//		}
+	//
+	//		return lambda;
+	//	}
+
+	public int getIterationOfSpectralRedius() {
+		int n = this.getData().length;
+		double lambda = 0.0;
+		double lambdaOld = 0.0;
+		Vector xOld = new Vector(n);
+		Vector x = new Vector(n);
+		int iteration;
+
+		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+
+		for (iteration = 0; iteration < max_iteration; iteration++) {
+			x = this.multiply(xOld);
+			lambda = Math.abs(Vector.innerProduct(xOld, x));
+
+			if (Math.abs(lambda - lambdaOld) < epsilon) {
+				break;
+			}
+			// System.out.println(lambda);
+			lambdaOld = lambda;
+			xOld = x.scalarMultiply(1.0 / x.getNorm(2));
+
+		}
+
+		return iteration;
 	}
 
 	// 対称行列か否か(Machine Epsilon評価)

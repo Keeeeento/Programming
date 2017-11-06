@@ -2,7 +2,8 @@ package mathlib;
 
 public class Exponent {
 
-	public double num() {
+	public double e(double x) {
+
 	}
 
 	public double diffetential(double base, double power) {

@@ -17,4 +17,8 @@ public class Differential {
 	public double[] differential(double data) {
 
 	}
+
+	public static void main(String[] args) {
+		double[] f = {};
+	}
 }
