@@ -833,7 +833,7 @@ public class Matrix extends LinearEquation {
 		Vector xOld = new Vector(n);
 		Vector x = new Vector(n);
 
-		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+		xOld.allNumber(1.0); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
 
 		for (int iteration = 0; iteration < max_iteration; iteration++) {
 			x = this.multiply(xOld);
@@ -886,7 +886,7 @@ public class Matrix extends LinearEquation {
 		Vector x = new Vector(n);
 		int iteration;
 
-		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+		xOld.allNumber(1.0); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
 
 		for (iteration = 0; iteration < max_iteration; iteration++) {
 			x = this.multiply(xOld);

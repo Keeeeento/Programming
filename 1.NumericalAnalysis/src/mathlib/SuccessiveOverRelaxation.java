@@ -51,7 +51,7 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 		n = a.getN();
 		x = x0.copy();
 		Vector xOld = new Vector(n);
-		Vector xTilde = new Vector(n);
+		double x_tilde = 0.0;
 
 		for (iteration = 0; iteration < max_iteration; iteration++) {
 			for (int i = 0; i < n; i++) {
@@ -61,9 +61,9 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 						sum += a.getData()[i][j] * x.getData()[j];
 					}
 				}
-				xTilde.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
-				x.getData()[i] = omega * xTilde.getData()[i] + (1.0 - omega) * x.getData()[i];
-				//または x.getData()[i] = x.getData()[i] + omega * (xTilde.getData()[i] - x.getData()[i]);
+				x_tilde = (b.getData()[i] - sum) / a.getData()[i][i];
+				x.getData()[i] = omega * x_tilde + (1.0 - omega) * x.getData()[i];
+				//または x.getData()[i] = x.getData()[i] + omega * (xTilde - x.getData()[i]);
 			}
 
 			if (xOld.getRelativeError(norm, x) <= epsilon) {
@@ -122,6 +122,14 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 			return 0;
 		}
 		return iteration;
+	}
+
+	/**
+	 * SOR法の反復行列ℒ
+	 * @return L
+	 */
+	public double getIterativeMatrix() {
+		return 0;
 	}
 
 	public static void main(String[] args) {

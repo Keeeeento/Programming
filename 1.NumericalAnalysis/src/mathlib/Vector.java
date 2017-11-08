@@ -261,6 +261,23 @@ public class Vector {
 		return this.getAbsoluteError(normNumber, x) / x.getNorm(normNumber);
 	}
 
+	/**
+	 * 誤差ノルム
+	 * @param is_absolute
+	 * @param norm_number
+	 * @param x
+	 * @return
+	 */
+	public double getError(boolean is_absolute, double norm_number, Vector x) {
+		if (is_absolute == true) {
+			return getAbsoluteError(norm_number, x);
+		} else if (is_absolute == false) {
+			return getRelativeError(norm_number, x);
+		} else {
+			return 0;
+		}
+	}
+
 	// 残差
 	public Vector residual(Matrix a, Vector b) {
 		return this.subtract(b, a.multiply(a, this));
@@ -286,6 +303,24 @@ public class Vector {
 		return this.residual(a, b).getNorm(normNumber) / b.getNorm(normNumber);
 	}
 
+	/**
+	 * 残差ノルム
+	 * @param is_absolute
+	 * @param norm_number
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public double getResidual(boolean is_absolute, double norm_number, Matrix a, Vector b) {
+		if (is_absolute == true) {
+			return getAbsoluteResidual(norm_number, a, b);
+		} else if (is_absolute == false) {
+			return getRelativeResidual(norm_number, a, b);
+		} else {
+			return 0;
+		}
+	}
+
 	// 第1成分を1e-3倍
 	public Vector deltaAddedVector() {
 		int n = this.getData().length;
@@ -293,6 +328,15 @@ public class Vector {
 		Vector delta = new Vector(n);
 		b.getData()[0] += 1e-3 * b.getData()[0];
 		return b.add(delta);
+	}
+
+	public double getMaximumElement() {
+		int n = this.getN();
+		double max = this.getData()[0];
+		for (int i = 1; i < n; i++) {
+			max = Math.max(max, this.getData()[i]);
+		}
+		return max;
 	}
 
 }

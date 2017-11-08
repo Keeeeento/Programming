@@ -19,7 +19,10 @@ public class LUDecomposition {
 		return lu;
 	}
 
-	// LU分解後のL
+	/**
+	 * @param a
+	 * @return L LU分解後の行列L
+	 */
 	public static Matrix getL(Matrix a) {
 		int n = a.getData().length;
 		Matrix lu = luDecomposition(a);
@@ -36,7 +39,10 @@ public class LUDecomposition {
 		return l;
 	}
 
-	// LU分解後のU
+	/**
+	 * @param a
+	 * @return U LU分解後のU
+	 */
 	public static Matrix getU(Matrix a) {
 		int n = a.getData().length;
 		Matrix lu = luDecomposition(a);
@@ -51,7 +57,12 @@ public class LUDecomposition {
 		return u;
 	}
 
-	// 前進代入
+	/**
+	 * 前進代入
+	 * @param l
+	 * @param b
+	 * @return y 前進代入後のベクトル
+	 */
 	public static Vector forwardSubstitution(Matrix l, Vector b) {
 		int n = l.getData().length;
 		Vector x = new Vector(b.getN());
@@ -65,7 +76,12 @@ public class LUDecomposition {
 		return x;
 	}
 
-	// 後退代入
+	/**
+	 * 後退代入
+	 * @param u
+	 * @param y
+	 * @return x
+	 */
 	public static Vector backwardSubstitution(Matrix u, Vector y) {
 		int n = u.getData().length;
 		Vector x = y.copy(y);
