@@ -5,17 +5,8 @@ package mathlib;
  *
  */
 
-public class Vector {
+public class Vector extends LinearCondition {
 	private double[] data;
-	private int n;
-
-	public int getN() {
-		return n;
-	}
-
-	public void setN(int n) {
-		this.n = n;
-	}
 
 	public double[] getData() {
 		return data;
@@ -25,17 +16,25 @@ public class Vector {
 		this.data = data;
 	}
 
+	public static int getN() {
+		return n;
+	}
+
+	public static void setN(int n) {
+		DefaultCondition.n = n;
+	}
+
 	// n次元ベクトル(全要素0)
 	public Vector(int n) {
-		this.n = n;
+		DefaultCondition.n = n;
 		this.data = new double[n];
 	}
 
 	// 配列をベクトルに格納
 	public Vector(double[] data) {
-		this.n = data.length;
+		DefaultCondition.n = data.length;
 		this.data = new double[n];
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			this.data[i] = data[i];
 		}
 	}
@@ -110,7 +109,6 @@ public class Vector {
 	}
 
 	public Vector copy(Vector a) {
-		this.n = a.data.length;
 		Vector vector = new Vector(n);
 		for (int i = 0; i < n; i++) {
 			vector.data[i] = a.data[i];
@@ -121,7 +119,7 @@ public class Vector {
 	// c倍
 	public Vector scalarMultiply(double c) {
 		Vector a = copy(this);
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			a.data[i] *= c;
 		}
 		return a;
@@ -129,7 +127,7 @@ public class Vector {
 
 	// 要素をすべてn
 	public void allNumber(double num) {
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			this.data[i] = num;
 		}
 	}
@@ -144,7 +142,6 @@ public class Vector {
 
 	// 加算
 	public Vector add(Vector x, Vector y) {
-		n = x.n;
 		Vector z = new Vector(n);
 		for (int i = 0; i < n; i++) {
 			z.data[i] = x.data[i] + y.data[i];
@@ -172,7 +169,7 @@ public class Vector {
 	// 内積
 	public static double innerProduct(Vector x, Vector y) {
 		double innerProduct = 0.0;
-		for (int i = 0; i < x.n; i++) {
+		for (int i = 0; i < n; i++) {
 			innerProduct += x.data[i] * y.data[i];
 		}
 		return innerProduct;
@@ -181,7 +178,7 @@ public class Vector {
 	// 1ノルム
 	public double getManhattanNorm() {
 		double norm = 0.0;
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			norm += Math.abs(this.data[i]);
 		}
 		return norm;
@@ -191,7 +188,7 @@ public class Vector {
 	// 2ノルム
 	public double getEuclideanNorm() {
 		double norm = 0.0;
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			norm += this.data[i] * this.data[i];
 		}
 		return Math.sqrt(norm);
@@ -201,7 +198,7 @@ public class Vector {
 	// 無限大ノルム
 	public double getInfinityNorm() {
 		double norm = 0.0;
-		for (int i = 0; i < this.n; i++) {
+		for (int i = 0; i < n; i++) {
 			norm = Math.max(norm, Math.abs(this.data[i]));
 		}
 		return norm;
@@ -212,12 +209,12 @@ public class Vector {
 	public double getNorm(double normNumber) {
 		double norm = 0;
 		if (normNumber > 0) {
-			for (int i = 0; i < this.n; i++) {
+			for (int i = 0; i < n; i++) {
 				norm += Math.pow(this.data[i], normNumber);
 			}
 			norm = Math.abs(Math.pow(norm, 1.0 / normNumber));
 		} else if (normNumber == 0) {
-			for (int i = 0; i < this.n; i++) {
+			for (int i = 0; i < n; i++) {
 				norm = Math.max(norm, Math.abs(this.data[i]));
 			}
 		}
@@ -228,13 +225,13 @@ public class Vector {
 	public double getNorm(String normNumber) {
 		double norm = 0;
 		if (normNumber.equals("inf")) {
-			for (int i = 0; i < this.n; i++) {
+			for (int i = 0; i < n; i++) {
 				norm = Math.max(norm, Math.abs(this.data[i]));
 			}
 		} else {
 			double n = Double.parseDouble(normNumber);
 			if (n > 0) {
-				for (int i = 0; i < this.n; i++) {
+				for (int i = 0; i < n; i++) {
 					norm += Math.pow(this.data[i], n);
 				}
 				norm = Math.pow(norm, 1.0 / n);
@@ -331,7 +328,6 @@ public class Vector {
 	}
 
 	public double getMaximumElement() {
-		int n = this.getN();
 		double max = this.getData()[0];
 		for (int i = 1; i < n; i++) {
 			max = Math.max(max, this.getData()[i]);

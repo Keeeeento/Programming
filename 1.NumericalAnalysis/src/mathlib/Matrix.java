@@ -5,26 +5,8 @@ package mathlib;
  *
  */
 
-public class Matrix extends LinearEquation {
-	private int n;
-	private int m;
+public class Matrix extends LinearCondition {
 	private double[][] data;
-
-	public int getN() {
-		return n;
-	}
-
-	public void setN(int n) {
-		this.n = n;
-	}
-
-	public int getM() {
-		return m;
-	}
-
-	public void setM(int m) {
-		this.m = m;
-	}
 
 	public double[][] getData() {
 		return data;
@@ -34,10 +16,18 @@ public class Matrix extends LinearEquation {
 		this.data = data;
 	}
 
+	public int getN() {
+		return n;
+	}
+
+	public void setN(int n) {
+		DefaultCondition.n = n;
+	}
+
 	// 行列のコンソール表示
 	public void print() {
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				if (this.data[i][j] >= 0) {
 					System.out.printf(" %.3f ", this.data[i][j]);
 
@@ -58,7 +48,7 @@ public class Matrix extends LinearEquation {
 	// 指数表記
 	public void printf() {
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				if (this.data[i][j] >= 0) {
 					System.out.printf(" %.3e ", this.data[i][j]);
 
@@ -79,7 +69,7 @@ public class Matrix extends LinearEquation {
 	// 整数表記
 	public void printInt() {
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				if (this.data[i][j] >= 0) {
 					System.out.printf(" %d ", (int) this.data[i][j]);
 				} else {
@@ -101,14 +91,14 @@ public class Matrix extends LinearEquation {
 		System.out.println("   \\begin{pmatrix}");
 		for (int i = 0; i < n; i++) {
 			System.out.print("      ");
-			for (int j = 0; j < m - 1; j++) {
+			for (int j = 0; j < n - 1; j++) {
 				System.out.printf("%.10f & ", this.data[i][j]);
 			}
 			if (i == n - 1) {
-				System.out.printf("%.10f\n", this.data[i][m - 1]);
+				System.out.printf("%.10f\n", this.data[i][n - 1]);
 
 			} else {
-				System.out.printf("%.10f \\\\ \n", this.data[i][m - 1]);
+				System.out.printf("%.10f \\\\ \n", this.data[i][n - 1]);
 			}
 		}
 		System.out.println("   \\end{pmatrix}");
@@ -124,17 +114,17 @@ public class Matrix extends LinearEquation {
 		System.out.println("   \\begin{pmatrix}");
 		for (int i = 0; i < n; i++) {
 			System.out.print("      ");
-			for (int j = 0; j < m - 1; j++) {
+			for (int j = 0; j < n - 1; j++) {
 				System.out.printf("%d & ", (int) this.data[i][j]);
 			}
 			if (i == n - 1) {
-				System.out.printf("%d\n", (int) this.data[i][m - 1]);
+				System.out.printf("%d\n", (int) this.data[i][n - 1]);
 
 			} else {
-				System.out.printf("%d \\\\ \n ", (int) this.data[i][m - 1]);
+				System.out.printf("%d \\\\ \n ", (int) this.data[i][n - 1]);
 			}
 		}
-		System.out.print("   \\end{pmatrix}");
+		System.out.println("   \\end{pmatrix}");
 	}
 
 	public void printTeXInt(String str) {
@@ -143,35 +133,27 @@ public class Matrix extends LinearEquation {
 		System.out.println("$$");
 	}
 
-	// n×m行列(全要素0)
-	public Matrix(int n, int m) {
-		this.n = n;
-		this.m = m;
-		this.data = new double[n][m];
-	}
-
 	// n次正方行列(全要素0)
 	public Matrix(int n) {
-		this(n, n);
+		this.data = new double[n][n];
 	}
 
 	// 二次元配列をMatrixに格納
 	public Matrix(double[][] data) {
-		this.n = data.length;
-		this.m = data[0].length;
-		this.data = new double[n][m];
+		n = data.length;
+		this.data = new double[n][n];
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				this.data[i][j] = data[i][j];
 			}
 		}
 	}
 
 	// 全要素numberの行列を返す
-	public static Matrix allNumber(int size, double number) {
-		Matrix a = new Matrix(size);
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
+	public static Matrix allNumber(int n, double number) {
+		Matrix a = new Matrix(n);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
 				a.getData()[i][j] = number;
 			}
 		}
@@ -180,7 +162,6 @@ public class Matrix extends LinearEquation {
 
 	// 行列を単位行列化
 	public void identify() {
-		int n = this.data.length;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				this.data[i][j] = (i == j) ? 1 : 0;
@@ -225,20 +206,20 @@ public class Matrix extends LinearEquation {
 	}
 
 	// 行列のc倍
-	public Matrix multiply(double c) {
+	public Matrix scalarMultiply(double c) {
 		Matrix a = this;
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				a.data[i][j] *= c;
 			}
 		}
 		return a;
 	}
 
-	public Matrix multiply(double c, Matrix a) {
+	public Matrix scalarMultiply(double c, Matrix a) {
 		Matrix b = copy(a);
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				b.data[i][j] *= c;
 			}
 		}
@@ -259,9 +240,9 @@ public class Matrix extends LinearEquation {
 
 	// 行列のコピー
 	public Matrix copy() {
-		Matrix copy = new Matrix(n, m);
+		Matrix copy = new Matrix(n);
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				copy.data[i][j] = this.data[i][j];
 			}
 		}
@@ -269,9 +250,9 @@ public class Matrix extends LinearEquation {
 	}
 
 	public Matrix copy(Matrix a) {
-		Matrix copy = new Matrix(n, m);
+		Matrix copy = new Matrix(n);
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
+			for (int j = 0; j < n; j++) {
 				copy.data[i][j] = a.data[i][j];
 			}
 		}
@@ -312,11 +293,11 @@ public class Matrix extends LinearEquation {
 
 	// 行列の差
 	public Matrix subtract(Matrix a, Matrix b) {
-		return add(a, multiply(-1));
+		return add(a, scalarMultiply(-1));
 	}
 
 	public Matrix subtract(Matrix a) {
-		return this.add(a.multiply(-1));
+		return this.add(a.scalarMultiply(-1));
 	}
 
 	// 行列の積
@@ -386,7 +367,7 @@ public class Matrix extends LinearEquation {
 
 	// 行列とベクトルの積
 	public Vector multiply(Matrix a, Vector x) {
-		Vector y = new Vector(x.getN());
+		Vector y = new Vector(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				y.getData()[i] += a.data[i][j] * x.getData()[j];
@@ -412,7 +393,6 @@ public class Matrix extends LinearEquation {
 
 	// 前進消去
 	public void forwardElimination(Matrix a, Vector b) {
-		this.n = a.n;
 		double alpha = 0.0;
 		for (int k = 0; k < n - 1; k++) {
 			for (int i = k + 1; i < n; i++) {
@@ -427,7 +407,6 @@ public class Matrix extends LinearEquation {
 
 	// 前進消去過程後のA
 	public Matrix forwardEliminatedMatrix(Matrix a, Vector b) {
-		this.n = a.n;
 		double alpha = 0.0;
 		Matrix a2 = a.copy();
 		Vector b2 = b.copy();
@@ -445,7 +424,6 @@ public class Matrix extends LinearEquation {
 
 	// 前進消去過程後のb
 	public Vector forwardEliminatedVector(Matrix a, Vector b) {
-		this.n = a.n;
 		double alpha = 0.0;
 		Matrix a2 = a.copy();
 		Vector b2 = b.copy();
@@ -463,7 +441,6 @@ public class Matrix extends LinearEquation {
 
 	// ピボット選択付き前進消去
 	public void pivotingForwardElimination(Matrix a, Vector b) {
-		this.n = a.n;
 		int ell = 0; // 絶対値最大成分の行番号
 		double alpha = 0.0;
 		double pivot = 0.0;
@@ -506,7 +483,7 @@ public class Matrix extends LinearEquation {
 	// 前進代入
 	// lは対角成分が1の下三角行列
 	public Vector forwardSubstitution(Matrix l, Vector b) {
-		Vector x = new Vector(b.getN());
+		Vector x = new Vector(n);
 		x = x.copy(b);
 		for (int k = 0; k < n; k++) {
 			for (int j = 0; j < k; j++) {
@@ -544,70 +521,8 @@ public class Matrix extends LinearEquation {
 		return backwardSubstitution(a2, b2);
 	}
 
-	// // LU分解
-	// // 下三角行列がL, 上三角行列がUである行列を返す
-	// public Matrix luDecomposition(Matrix a) {
-	// int n = a.getN();
-	// Matrix lu = copy(a);
-	// for (int k = 0; k < n; k++) {
-	// for (int i = k + 1; i < n; i++) {
-	// double alpha = lu.data[i][k] / lu.data[k][k];
-	// for (int j = k + 1; j < n; j++) {
-	// lu.data[i][j] -= alpha * lu.data[k][j];
-	// }
-	// lu.data[i][k] = alpha;
-	// }
-	// }
-	// return lu;
-	// }
-	//
-	// // LU分解でのL
-	// public Matrix l(Matrix a) {
-	// this.n = a.n;
-	// Matrix l = new Matrix(n);
-	// for (int i = 0; i < n; i++) {
-	// for (int j = 0; j < n; j++) {
-	// if (i > j) {
-	// l.data[i][j] = a.data[i][j];
-	// } else if (i == j) {
-	// l.data[i][j] = 1;
-	// }
-	// }
-	// }
-	// return l;
-	// }
-	//
-	// // LU分解でのU
-	// public Matrix u(Matrix a) {
-	// this.n = a.n;
-	// Matrix u = new Matrix(n);
-	// for (int i = 0; i < n; i++) {
-	// for (int j = 0; j < n; j++) {
-	// if (i <= j) {
-	// u.data[i][j] = a.data[i][j];
-	// }
-	// }
-	// }
-	// return u;
-	// }
-	//
-	// // LU分解でxを求める
-	// public Vector solveByLUDecomposition(Matrix a, Vector b) {
-	// n = a.data.length;
-	// Vector x = new Vector(n);
-	// Vector y = new Vector(n);
-	// Matrix lu = new Matrix(n);
-	// lu = luDecomposition(a);
-	// Matrix l = l(lu);
-	// Matrix u = u(lu);
-	// y = forwardSubstitution(l, b);
-	// x = backwardSubstitution(u, y);
-	// return x;
-	// }
-
 	// 逆行列
 	public Matrix inverse(Matrix a) {
-		int n = a.n;
 		Matrix inv = new Matrix(n);
 		Matrix l = LUDecomposition.getL(a);
 		Matrix u = LUDecomposition.getU(a);
@@ -625,34 +540,53 @@ public class Matrix extends LinearEquation {
 		return inv.transpose();
 	}
 
-	public Matrix inverse() {
-		int n = this.n;
-		Matrix inv = new Matrix(n);
-		Matrix l = LUDecomposition.getL(this);
-		Matrix u = LUDecomposition.getU(this);
-
-		Vector x = new Vector(n);
-		Vector y = new Vector(n);
+	/**
+	 * @return 対角行列か否か
+	 */
+	public boolean isDiagonal() {
+		boolean isDiagonal = true;
 		for (int i = 0; i < n; i++) {
-			double[] data = new double[n];
-			data[i] = 1;
-			Vector e = new Vector(data);
-			y = forwardSubstitution(l, e);
-			x = backwardSubstitution(u, y);
-			inv.data[i] = x.getData();
+			for (int j = 0; j < n; j++) {
+				if (i != j) {
+					if (this.getData()[i][j] > epsilon) {
+						isDiagonal = false;
+					}
+				}
+			}
 		}
-		return inv.transpose();
+		return isDiagonal;
 	}
 
-	// 条件数
-	// public double getConditionNumberOfOneNorm() {
-	// return this.getManhattanNorm() * inverse(this).getManhattanNorm();
-	// }
-	//
-	// public double getConditionNumberOfInfinityNorm() {
-	// return this.getInfinityNorm() * inverse(this).getInfinityNorm();
-	// }
-	//
+	/**
+	 * 対角行列 -> 対角成分を逆数
+	 * otherwise -> LU分解から
+	 * @return 逆行列
+	 */
+	public Matrix inverse() {
+		Matrix inv = new Matrix(n);
+		if (this.isDiagonal()) {
+			for (int i = 0; i < n; i++) {
+				inv.data[i][i] = 1.0 / this.data[i][i];
+			}
+			return inv;
+		} else {
+
+			Matrix l = LUDecomposition.getL(this);
+			Matrix u = LUDecomposition.getU(this);
+
+			Vector x = new Vector(n);
+			Vector y = new Vector(n);
+			for (int i = 0; i < n; i++) {
+				double[] data = new double[n];
+				data[i] = 1;
+				Vector e = new Vector(data);
+				y = forwardSubstitution(l, e);
+				x = backwardSubstitution(u, y);
+				inv.data[i] = x.getData();
+			}
+			return inv.transpose();
+		}
+	}
 
 	// 条件数
 	public double getConditionNumber(int normNumber) {
@@ -661,21 +595,19 @@ public class Matrix extends LinearEquation {
 
 	// 対角行列
 	public Matrix getDiagonal() {
-		n = this.data.length;
-		Matrix diagnal = new Matrix(n);
+		Matrix diagonal = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (i == j) {
-					diagnal.data[i][j] = this.data[i][j];
+					diagonal.data[i][j] = this.data[i][j];
 				}
 			}
 		}
-		return diagnal;
+		return diagonal;
 	}
 
 	// 狭義下三角行列
 	public Matrix getLower() {
-		n = this.data.length;
 		Matrix lower = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -689,12 +621,11 @@ public class Matrix extends LinearEquation {
 
 	// 狭義上三角行列
 	public Matrix getUpper() {
-		n = this.data.length;
 		Matrix upper = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				upper.data[i][j] = this.data[i][j];
 				if (i < j) {
+					upper.data[i][j] = this.data[i][j];
 				}
 			}
 		}
@@ -703,7 +634,6 @@ public class Matrix extends LinearEquation {
 
 	// 行列式
 	public double getDeterminant() {
-		int n = this.getData().length;
 		Matrix u = LUDecomposition.getU(this);
 		double det = 1;
 
@@ -762,7 +692,7 @@ public class Matrix extends LinearEquation {
 	}
 
 	// 対称帯行列の作成
-	public void symmetricBand(double d, double diagnal2, double diagnal3) {
+	public void symmetricBand(double d, double d2, double d3) {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				switch (Math.abs(i - j)) {
@@ -770,10 +700,10 @@ public class Matrix extends LinearEquation {
 					this.getData()[i][j] = d;
 					break;
 				case 1:
-					this.getData()[i][j] = diagnal2;
+					this.getData()[i][j] = d2;
 					break;
 				case 2:
-					this.getData()[i][j] = diagnal3;
+					this.getData()[i][j] = d3;
 					break;
 				default:
 					break;
@@ -790,20 +720,20 @@ public class Matrix extends LinearEquation {
 		this.symmetricBand(d, 0, 0);
 	}
 
-	public static Matrix symmetricBand(int size, double d, double d2, double d3) {
-		Matrix a = new Matrix(size);
+	public static Matrix symmetricBand(int n, double d, double d2, double d3) {
+		Matrix a = new Matrix(n);
 		a.symmetricBand(d, d2, d3);
 		return a;
 	}
 
-	public static Matrix symmetricBand(int size, double d, double d2) {
-		Matrix a = new Matrix(size);
+	public static Matrix symmetricBand(int n, double d, double d2) {
+		Matrix a = new Matrix(n);
 		a.symmetricBand(d, d2, 0);
 		return a;
 	}
 
-	public static Matrix symmetricBand(int size, double d) {
-		Matrix a = new Matrix(size);
+	public static Matrix symmetricBand(int n, double d) {
+		Matrix a = new Matrix(n);
 		a.symmetricBand(d, 0, 0);
 		return a;
 	}
@@ -823,26 +753,24 @@ public class Matrix extends LinearEquation {
 	 * getSpecturalRedius
 	 * スペクトル半径を求める
 	 * 収束判定条件あり
+	 * 初期ベクトル x0 = {1,1,…,1}
 	 * @param なし
 	 * @return lambda スペクトル半径(絶対値最大の固有値)
 	 */
 	public double getSpectralRadius() {
-		int n = this.getData().length;
+
 		double lambda = 0.0;
 		double lambdaOld = 0.0;
-		Vector xOld = new Vector(n);
+		Vector xOld = Vector.allNumber(n, 1.0);
 		Vector x = new Vector(n);
 
-		xOld.allNumber(1.0); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
-
-		for (int iteration = 0; iteration < max_iteration; iteration++) {
+		for (int i = 0; i < maxIteration; i++) {
 			x = this.multiply(xOld);
 			lambda = Math.abs(Vector.innerProduct(xOld, x));
 
 			if (Math.abs(lambda - lambdaOld) < epsilon) {
 				break;
 			}
-			// System.out.println(lambda);
 			lambdaOld = lambda;
 			xOld = x.scalarMultiply(1.0 / x.getNorm(2));
 
@@ -850,45 +778,17 @@ public class Matrix extends LinearEquation {
 
 		return lambda;
 	}
-	// スペクトル半径を求める(旧バージョン)
-	//	public double getSpectralRadius() {
-	//		int maxIterationNumber = (int) (1e+10);
-	//		double epsilon = 1e-16;
-	//		int n = this.getData().length;
-	//		double lambda = 0.0;
-	//		double lambdaOld = 0.0;
-	//		Vector xOld = new Vector(n);
-	//		Vector x = new Vector(n);
-	//
-	//		xOld.allNumber(1.0 / (n * n)); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
-	//
-	//		for (int iteration = 0; iteration < maxIterationNumber; iteration++) {
-	//			x = this.multiply(xOld);
-	//			lambda = Math.abs(Vector.innerProduct(xOld, x));
-	//
-	//			if (Math.abs(lambda - lambdaOld) < epsilon) {
-	//				break;
-	//			}
-	//			// System.out.println(lambda);
-	//			lambdaOld = lambda;
-	//			xOld = x.scalarMultiply(1.0 / x.getNorm(2));
-	//
-	//		}
-	//
-	//		return lambda;
-	//	}
 
 	public int getIterationOfSpectralRedius() {
-		int n = this.getData().length;
 		double lambda = 0.0;
 		double lambdaOld = 0.0;
 		Vector xOld = new Vector(n);
 		Vector x = new Vector(n);
 		int iteration;
 
-		xOld.allNumber(1.0); // 初期ベクトル x = {1/n^2, 1/n^2, …, 1/n^2}
+		xOld.allNumber(1.0);
 
-		for (iteration = 0; iteration < max_iteration; iteration++) {
+		for (iteration = 0; iteration < maxIteration; iteration++) {
 			x = this.multiply(xOld);
 			lambda = Math.abs(Vector.innerProduct(xOld, x));
 
@@ -907,7 +807,6 @@ public class Matrix extends LinearEquation {
 	// 対称行列か否か(Machine Epsilon評価)
 	public boolean isSymmetric() {
 		boolean bool = true;
-		double epsilon = 1e-15;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (i != j && this.getData()[i][j] - this.getDeterminant() >= epsilon) {
@@ -917,9 +816,30 @@ public class Matrix extends LinearEquation {
 		}
 		return bool;
 	}
-	//
-	//	public boolean isSymmetricPositiveDefinite() {
-	//
-	//	}
+
+	/**
+	 * B = I-D^-1*A
+	 * @return ヤコビ法のためのヤコビ行列
+	 */
+	public Matrix getJacobiMatrix() {
+		Matrix i = Matrix.identity(this.getN());
+		Matrix d = this.getDiagonal();
+		return i.subtract(d.inverse().multiply(this));
+	}
+
+	public Matrix getJacobiMatrixOld() {
+		Matrix l = this.getDiagonal().inverse().multiply(this.getLower());
+		Matrix u = this.getDiagonal().inverse().multiply(this.getUpper());
+		return l.add(u).scalarMultiply(-1.0);
+	}
+
+	/**
+	 * @see SpectralRadious.java
+	 * @return 最適なomega
+	 */
+	public double getOptimalOmega() {
+		double rho = SpectralRadius.getSpectralRadiusByRayleigh(this.getJacobiMatrix(), Vector.allNumber(n, 1.0));
+		return 2.0 / (1.0 + Math.sqrt(1.0 - Math.pow(rho, 2.0)));
+	}
 
 }

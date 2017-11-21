@@ -37,7 +37,7 @@ public final class Trial05 extends SuccessiveOverRelaxation {
 		TeX.beginTable(new String[] { "a", "反復回数N", "第一成分x_1" });
 		for (int alpha = 2; alpha <= 8; alpha++) {
 			a = Matrix.symmetricBand(n, alpha, -1.0, -1.0);
-			int iteration = jacobi.getIter(a, b);
+			int iteration = jacobi.getIteration(a, b);
 			double x1 = (iteration == 0) ? 0 : jacobi.solve(a, b).getData()[0];
 			printTable(alpha, iteration, x1);
 		}
@@ -48,7 +48,7 @@ public final class Trial05 extends SuccessiveOverRelaxation {
 		TeX.beginTable(new String[] { "a", "反復回数N", "第一成分x_1" });
 		for (int alpha = 2; alpha <= 8; alpha++) {
 			a = Matrix.symmetricBand(n, alpha, -1.0, -1.0);
-			int iteration = gauss_seidel.getIter(a, b);
+			int iteration = gauss_seidel.getIteration(a, b);
 			double x1 = (iteration == 0) ? 0 : gauss_seidel.solve(a, b).getData()[0];
 			printTable(alpha, iteration, x1);
 		}
@@ -59,7 +59,7 @@ public final class Trial05 extends SuccessiveOverRelaxation {
 		TeX.beginTable(new String[] { "a", "反復回数N", "第一成分x_1" });
 		for (int alpha = 2; alpha <= 8; alpha++) {
 			a = Matrix.symmetricBand(n, alpha, -1.0, -1.0);
-			int iteration = sor.getIter(a, b);
+			int iteration = sor.getIteration(a, b);
 			double x1 = (iteration == 0) ? 0 : sor.solve(a, b).getData()[0];
 			printTable(alpha, iteration, x1);
 		}

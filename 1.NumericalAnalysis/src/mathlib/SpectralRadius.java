@@ -1,108 +1,124 @@
 package mathlib;
 
-public class SpectralRadius extends ConvergenceDeterminationCondition {
+public class SpectralRadius extends DefaultCondition {
 
-	private int iteration;
-	private double lambda;
-
-	private Matrix a;
-
-	/**
-	 * 初期ベクトル
-	 * 0でない
-	 */
-	private Vector x0;
-
-	/**
-	 * デフォルトコンストラクタ
-	 * 他にaとx0の宣言が必要
-	 */
-	public SpectralRadius() {
-		super();
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param epsilon
-	 * @param max_iteration
-	 * @param norm_number
-	 * @param is_absolute
-	 */
-	public SpectralRadius(double epsilon, int max_iteration, double norm_number, boolean is_absolute) {
-		super(epsilon, max_iteration, norm_number, is_absolute);
-	}
+	protected static double lambda;
+	private static Vector x;
 
 	/**
 	 * べき乗法のアルゴリズム
 	 * lambda <- 絶対値最大の固有値
+	 * @param a
+	 * @param x0
 	 */
-	public void powerMethod(Matrix a, Vector x0) {
+	public static void powerMethod(Matrix a, Vector x0) {
 
+		int n = a.getN();
 		final int NORM_NUMBER = 2;
 		lambda = 0.0;
-		double lambda_old = 0.0;
-		Vector x = x0.copy();
-		Vector x_old = x0.copy();
+		double lambdaOld = 0.0;
+		x = x0.copy();
+		Vector xOld = x0.copy();
 
-		for (iteration = 1; iteration <= max_iteration; iteration++) {
+		for (iteration = 1; iteration <= maxIteration; iteration++) {
 
 			// ベクトルの正規化
-			x_old = x_old.scalarMultiply(1.0 / x.getNorm(NORM_NUMBER));
+			xOld = xOld.scalarMultiply(1.0 / x.getNorm(NORM_NUMBER));
 
 			// べき乗の計算
-			x = a.multiply(x_old);
-			lambda = x.getMaximumElement() / x_old.getMaximumElement();
+			x = a.multiply(xOld);
 
-			if (Math.abs(lambda - lambda_old) / Math.abs(lambda) < epsilon) {
-				break;
+			// 固有値の計算
+			for (int i = 0; i < n; i++) {
+				if (xOld.getData()[i] != 0.0) {
+					lambda = x.getData()[i] / xOld.getData()[i];
+					i++;
+				}
+				if (xOld.getData()[i] != 0.0) {
+					lambdaOld = x.getData()[i] / xOld.getData()[i];
+					i = n;
+				}
 			}
 
-			lambda_old = lambda;
-			x_old = x.scalarMultiply(1.0 / x.getNorm(NORM_NUMBER));
+			// 収束判定
+			if (Math.abs(lambda - lambdaOld) / Math.abs(lambda) < epsilon) {
+				break;
+			}
+			lambdaOld = lambda;
+			if (lambda == 0.0) {
+				System.out.println("計算できていません");
+			}
 		}
 	}
 
-	public double getSpectralRadius(Matrix a, Vector x0) {
-		this.powerMethod(a, x0);
+	public static double getSpectralRadius(Matrix a) {
+		powerMethod(a, Vector.allNumber(n, 1.0 / n));
 		return lambda;
 	}
 
-	public int getIteration(Matrix a, Vector x0) {
-		this.powerMethod(a, x0);
+	public static double getSpectralRadius(Matrix a, Vector x0) {
+		powerMethod(a, x0);
+		return lambda;
+	}
+
+	public static int getIteration(Matrix a, Vector x0) {
+		powerMethod(a, x0);
 		return iteration;
 	}
 
-	public void rayleighQuotient(Matrix a, Vector x0) {
+	public static Vector getEigenVector(Matrix a, Vector x0) {
+		powerMethod(a, x0);
+		return x;
+	}
+
+	public static void rayleighQuotient(Matrix a, Vector x0) {
 		final int NORM_NUMBER = 2;
 		lambda = 0.0;
-		double lambda_old = 0.0;
+		double lambdaOld = 0.0;
 		Vector x = x0.copy();
-		Vector x_old = x0.copy();
+		Vector xOld = x0.copy();
 
-		for (iteration = 1; iteration <= max_iteration; iteration++) {
+		for (iteration = 1; iteration <= maxIteration; iteration++) {
 
 			// ベクトルの正規化
-			x_old = x_old.scalarMultiply(1.0 / x.getNorm(NORM_NUMBER));
+			xOld = xOld.scalarMultiply(1.0 / xOld.getNorm(NORM_NUMBER));
 
 			// レイリーによる計算
-			x = a.multiply(x_old);
+			x = a.multiply(xOld);
 			lambda = Vector.innerProduct(x, a.multiply(x)) / Vector.innerProduct(x, x);
 
-			if (Math.abs(lambda - lambda_old) / Math.abs(lambda) < epsilon) {
+			if (Math.abs(lambda - lambdaOld) / Math.abs(lambda) < epsilon) {
 				break;
 			}
-
-			lambda_old = lambda;
-			x_old = x.scalarMultiply(1.0 / x.getNorm(NORM_NUMBER));
+			lambdaOld = lambda;
 		}
 	}
 
+	public static double getSpectralRadiusByRayleigh(Matrix a, Vector x0) {
+		rayleighQuotient(a, x0);
+		return lambda;
+	}
+
+	public static int getIterationByRayleigh(Matrix a, Vector x0) {
+		rayleighQuotient(a, x0);
+		return iteration;
+	}
+
 	public static void main(String[] args) {
-		SpectralRadius sr = new SpectralRadius();
-		Matrix a = new Matrix(new double[][] { { 2, 1, 0 }, { 1, 4, 1 }, { 1, 1, 3 } });
-		int n = a.getN();
-		Vector x0 = Vector.allNumber(n, 1);
-		System.out.println("lambda = " + sr.getSpectralRadius(a, x0));
+
+		n = 5;
+		Matrix a = new Matrix(n);
+		a.symmetricBand(2.0, -1.0);
+		Vector x0 = new Vector(n);
+		x0.allNumber(1);
+		epsilon = 1e-10;
+		maxIteration = 1000;
+
+		System.out.println(getSpectralRadius(a, x0));
+		System.out.println(getIteration(a, x0));
+		getEigenVector(a, x0).print("x");
+
+		System.out.println(getSpectralRadius(Matrix.symmetricBand(n, 0, 5)));
 	}
 
 }

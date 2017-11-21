@@ -1,27 +1,6 @@
 package mathlib;
 
-public class GaussSeidel extends StationaryIterativeMethod {
-
-	public GaussSeidel() {
-		super();
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param epsilon マシンイプシロン
-	 * @param norm ノルム数
-	 * @param maxIter 最大反復回数
-	 */
-	public GaussSeidel(double epsilon, double norm, int maxIter, Vector x0) {
-		super(epsilon, norm, maxIter, x0);
-	}
-
-	public GaussSeidel(StationaryIterativeMethod conditions) {
-		this.epsilon = conditions.epsilon;
-		this.norm = conditions.norm;
-		this.max_iteration = conditions.max_iteration;
-		this.x0 = conditions.x0;
-	}
+public class GaussSeidel extends LinearCondition {
 
 	/**
 	 * solve
@@ -29,12 +8,11 @@ public class GaussSeidel extends StationaryIterativeMethod {
 	 * @param b 定数項ベクトル
 	 * @return x 未知数ベクトル 近似解
 	 */
-	public Vector solve(Matrix a, Vector b) {
-		int n = b.getData().length;
+	public static Vector solve() {
 		Vector x = x0.copy();
 		Vector xOld = new Vector(n);
 
-		for (iteration = 0; iteration < max_iteration; iteration++) {
+		for (iteration = 0; iteration < maxIteration; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
 				for (int j = 0; j < n; j++) {
@@ -44,7 +22,7 @@ public class GaussSeidel extends StationaryIterativeMethod {
 				}
 				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
 			}
-			if (xOld.getRelativeError(norm, x) <= epsilon || iteration >= max_iteration) {
+			if (xOld.getRelativeError(normNumber, x) <= epsilon || iteration >= maxIteration) {
 				break;
 			} else {
 				xOld = x.copy();
@@ -70,9 +48,9 @@ public class GaussSeidel extends StationaryIterativeMethod {
 	//	}
 
 	// 反復回数
-	public int getIter(Matrix a, Vector b) {
-		this.solve(a, b);
-		if (iteration == max_iteration) {
+	public static int getIteration() {
+		solve();
+		if (iteration == maxIteration) {
 			return 0;
 		}
 		return iteration;

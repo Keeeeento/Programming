@@ -1,59 +1,36 @@
 package mathlib;
 
-public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
+public class SuccessiveOverRelaxation extends LinearCondition {
 
 	/**
 	 * 緩和係数
 	 */
-	protected double omega;
+	protected static double omega;
+	private static Vector x;
 
 	/**
-	 * デフォルトコンストラクタ
-	 *  omega 初期値 1.5
-	 */
-	public SuccessiveOverRelaxation() {
-		super();
-		this.omega = 1.5;
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param epsilon マシンイプシロン
-	 * @param norm ノルム数
-	 * @param maxIter 最大反復回数
-	 * @param omega 緩和係数
-	 */
-	public SuccessiveOverRelaxation(double epsilon, double norm, int maxIter, Vector x0, double omega) {
-		super(epsilon, norm, maxIter, x0);
-		this.omega = omega;
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param conditions
-	 * @param omega 緩和係数
-	 */
-	public SuccessiveOverRelaxation(StationaryIterativeMethod conditions, double omega) {
-		this.epsilon = conditions.epsilon;
-		this.norm = conditions.norm;
-		this.max_iteration = conditions.max_iteration;
-		this.x0 = conditions.x0;
-		this.omega = omega;
-	}
-
-	/**
-	 * solve
-	 * @param a 係数行列
-	 * @param b 定数項ベクトル
+	 *
+	 * <br>
+	 * 収束判定条件
+	 * <ul>
+	 * <li>isAboslute
+	 * <li>normNumber
+	 * <li>epsilon
+	 * </ul>
+	 * を使います．
+	 * @param a
+	 * @param b
+	 * @param x0
+	 * @param omega
 	 * @return x 未知数ベクトル 近似解
 	 */
-	public Vector solve(Matrix a, Vector b) {
-		n = a.getN();
+	public static Vector solve() {
+
 		x = x0.copy();
 		Vector xOld = new Vector(n);
-		double x_tilde = 0.0;
+		double xTilde = 0.0;
 
-		for (iteration = 0; iteration < max_iteration; iteration++) {
+		for (iteration = 0; iteration < maxIteration; iteration++) {
 			for (int i = 0; i < n; i++) {
 				double sum = 0.0;
 				for (int j = 0; j < n; j++) {
@@ -61,25 +38,47 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 						sum += a.getData()[i][j] * x.getData()[j];
 					}
 				}
-				x_tilde = (b.getData()[i] - sum) / a.getData()[i][i];
-				x.getData()[i] = omega * x_tilde + (1.0 - omega) * x.getData()[i];
-				//または x.getData()[i] = x.getData()[i] + omega * (xTilde - x.getData()[i]);
+				xTilde = (b.getData()[i] - sum) / a.getData()[i][i];
+				xOld.getData()[i] = x.getData()[i];
+				x.getData()[i] = omega * xTilde + (1.0 - omega) * xOld.getData()[i];
 			}
-
-			if (xOld.getRelativeError(norm, x) <= epsilon) {
+			if (xOld.getError(isAbsolute, normNumber, x) <= epsilon) {
 				break;
 			}
-			xOld = x.copy();
 		}
 		return x;
 	}
-	//
-	//	private void sor(Matrix a, Vector b) {
-	//		super.n = a.getN();
+
+	public static Vector solve2() {
+
+		x = x0.copy();
+		Vector xOld = new Vector(n);
+		for (iteration = 0; iteration < maxIteration; iteration++) {
+			for (int i = 0; i < n; i++) {
+				double sum = 0.0;
+				for (int j = 0; j < n; j++) {
+					if (j != i) {
+						sum += a.getData()[i][j] * x.getData()[j];
+					}
+				}
+				x.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i] * omega;
+			}
+			if (xOld.getRelativeError(normNumber, x) <= epsilon || iteration >= maxIteration) {
+				break;
+			} else {
+				xOld = x.copy();
+			}
+		}
+
+		return x;
+	}
+
+	//	public static Vector solveOld() {
+	//		x = x0.copy();
 	//		Vector xOld = new Vector(n);
-	//		Vector xTilde = new Vector(n);
+	//		double xTilde = 0.0;
 	//
-	//		for (iteration = 0; iteration < maxIterationNumber; iteration++) {
+	//		for (iteration = 0; iteration < maxIteration; iteration++) {
 	//			for (int i = 0; i < n; i++) {
 	//				double sum = 0.0;
 	//				for (int j = 0; j < n; j++) {
@@ -87,56 +86,56 @@ public class SuccessiveOverRelaxation extends StationaryIterativeMethod {
 	//						sum += a.getData()[i][j] * x.getData()[j];
 	//					}
 	//				}
-	//				xTilde.getData()[i] = (b.getData()[i] - sum) / a.getData()[i][i];
-	//				x.getData()[i] = omega * xTilde.getData()[i] + (1.0 - omega) * x.getData()[i];
-	//				//または x.getData()[i] = x.getData()[i] + omega * (xTilde.getData()[i] - x.getData()[i]);
+	//				xTilde = (b.getData()[i] - sum) / a.getData()[i][i];
+	//				x.getData()[i] = omega * xTilde + (1.0 - omega) * x.getData()[i];
+	//				//または x.getData()[i] = x.getData()[i] + omega * (xTilde - x.getData()[i]);
 	//			}
 	//
-	//			System.out.println(iteration);
 	//			if (xOld.getRelativeError(normNumber, x) <= epsilon) {
 	//				break;
 	//			}
 	//			xOld = x.copy();
 	//		}
-	//	}
-
-	/**solve
-	 * @param a
-	 * @param b
-	 * @return x 解を求める
-	 */
-	//	public Vector solve(Matrix a, Vector b) {
-	//		sor(a, b);
 	//		return x;
 	//	}
 
-	/**getIter
-	 * 最大反復回数時 0
-	 * @param a 係数行列
-	 * @param b 定数項ベクトル
-	 * @return iteration 反復回数
+	/**
+	 * @return iteration
 	 */
-	public int getIter(Matrix a, Vector b) {
-		this.solve(a, b);
-		if (iteration == max_iteration) {
+	public static int getIteration() {
+		solve();
+		if (iteration == maxIteration) {
 			return 0;
 		}
 		return iteration;
 	}
 
 	/**
+	 * 未完成
 	 * SOR法の反復行列ℒ
 	 * @return L
 	 */
-	public double getIterativeMatrix() {
+	public static double getIterativeMatrix() {
 		return 0;
 	}
 
+	/**
+	 * 最適なω
+	 * @param a
+	 * @return
+	 */
+	public static double getOptOmega() {
+		double rho = SpectralRadius.getSpectralRadius(Jacobi.getJacobiMatrix());
+		return 2.0 / (1.0 + Math.sqrt(1.0 - Math.pow(rho, 2.0)));
+	}
+
 	public static void main(String[] args) {
-		SuccessiveOverRelaxation sor = new SuccessiveOverRelaxation();
-		Matrix a = new Matrix(new double[][] { { 3, 2, 1 }, { 1, 3, -2 }, { 2, -1, 4 } });
-		Vector b = new Vector(new double[] { 4, 6, -3 });
-		sor.solve(a, b).printTeX("x");
-		System.out.println(sor.getIter(a, b));
+		n = 3;
+		a = new Matrix(new double[][] { { 3, 2, 1 }, { 1, 3, -2 }, { 2, -1, 4 } });
+		x0 = Vector.allNumber(n, 1);
+
+		b = new Vector(new double[] { 4, 6, -3 });
+		SuccessiveOverRelaxation.solve().printTeX("x");
+		System.out.println(SuccessiveOverRelaxation.getIteration());
 	}
 }

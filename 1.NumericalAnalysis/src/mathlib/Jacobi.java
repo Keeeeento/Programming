@@ -1,46 +1,17 @@
 package mathlib;
 
-public class Jacobi extends StationaryIterativeMethod {
-
-	/**
-	 * デフォルトコンストラクタ
-	 */
-	public Jacobi() {
-		super();
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param epsilon マシンイプシロン
-	 * @param norm ノルム数
-	 * @param maxIter 最大反復回数
-	 */
-	public Jacobi(double epsilon, double norm, int maxIter, Vector x0) {
-		super(epsilon, norm, maxIter, x0);
-	}
-
-	/**
-	 * コンストラクタ
-	 * @param conditions 初期条件
-	 */
-	public Jacobi(StationaryIterativeMethod conditions) {
-		this.epsilon = conditions.epsilon;
-		this.norm = conditions.norm;
-		this.max_iteration = conditions.max_iteration;
-		this.x0 = conditions.x0;
-	}
+public class Jacobi extends LinearCondition {
 
 	/**solve
 	 * @param a 係数行列
 	 * @param b 定数項ベクトル
 	 * @return x 未知数ベクトル 近似解
 	 */
-	public Vector solve(Matrix a, Vector b) {
-		int n = b.getData().length;
+	public static Vector solve() {
 		Vector x = x0.copy();
 		Vector xOld = new Vector(n);
 
-		for (iteration = 0; iteration < max_iteration; iteration++) {
+		for (iteration = 0; iteration < maxIteration; iteration++) {
 			for (int i = 0; i < n; i++) {
 				x.getData()[i] = b.getData()[i];
 				for (int j = 0; j < n; j++) {
@@ -50,7 +21,7 @@ public class Jacobi extends StationaryIterativeMethod {
 				}
 				x.getData()[i] /= a.getData()[i][i];
 			}
-			if (xOld.getRelativeError(norm, x) <= epsilon || iteration >= max_iteration) { // 収束判定条件
+			if (xOld.getRelativeError(normNumber, x) <= epsilon || iteration >= maxIteration) { // 収束判定条件
 				break;
 			} else {
 				xOld = x.copy();
@@ -81,9 +52,9 @@ public class Jacobi extends StationaryIterativeMethod {
 	 * @param b
 	 * @return iteration
 	 */
-	public int getIter(Matrix a, Vector b) {
-		this.solve(a, b);
-		if (iteration == max_iteration) {
+	public static int getIteration() {
+		Jacobi.solve();
+		if (iteration == maxIteration) {
 			return 0;
 		}
 		return iteration;
@@ -123,8 +94,7 @@ public class Jacobi extends StationaryIterativeMethod {
 	//	}
 
 	// 反復行列
-	public static Matrix IterativeMatrixOf(Matrix a) {
-		int n = a.getData().length;
+	public static Matrix getIterativeMatrix() {
 		Matrix t = new Matrix(n);
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -133,16 +103,26 @@ public class Jacobi extends StationaryIterativeMethod {
 				}
 			}
 		}
-		return t.multiply(-1);
+		return t.scalarMultiply(-1);
 	}
 
-	public static Vector IterativeVectorOf(Matrix a, Vector b) {
-		int n = a.getData().length;
+	public static Vector getIterativeVector() {
 		Vector c = new Vector(n);
 		for (int i = 0; i < n; i++) {
 			c.getData()[i] = b.getData()[i] / a.getData()[i][i];
 		}
 		return c;
+	}
+
+	/**
+	 * ヤコビ行列
+	 * @param a
+	 * @return ヤコビ行列
+	 */
+	public static Matrix getJacobiMatrix() {
+		Matrix l = a.getDiagonal().inverse().multiply(a.getLower());
+		Matrix u = a.getDiagonal().inverse().multiply(a.getUpper());
+		return l.add(u);
 	}
 
 }

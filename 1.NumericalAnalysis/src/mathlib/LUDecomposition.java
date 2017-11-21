@@ -1,11 +1,10 @@
 package mathlib;
 
-public class LUDecomposition {
+public class LUDecomposition extends LinearCondition {
 
 	// LU分解
 	// 単位下三角行列がL, 上三角行列がUである行列を返す
 	public static Matrix luDecomposition(Matrix a) {
-		int n = a.getN();
 		Matrix lu = a.copy();
 		for (int k = 0; k < n; k++) {
 			for (int i = k + 1; i < n; i++) {
@@ -24,7 +23,6 @@ public class LUDecomposition {
 	 * @return L LU分解後の行列L
 	 */
 	public static Matrix getL(Matrix a) {
-		int n = a.getData().length;
 		Matrix lu = luDecomposition(a);
 		Matrix l = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -44,7 +42,6 @@ public class LUDecomposition {
 	 * @return U LU分解後のU
 	 */
 	public static Matrix getU(Matrix a) {
-		int n = a.getData().length;
 		Matrix lu = luDecomposition(a);
 		Matrix u = new Matrix(n);
 		for (int i = 0; i < n; i++) {
@@ -64,8 +61,7 @@ public class LUDecomposition {
 	 * @return y 前進代入後のベクトル
 	 */
 	public static Vector forwardSubstitution(Matrix l, Vector b) {
-		int n = l.getData().length;
-		Vector x = new Vector(b.getN());
+		Vector x = new Vector(n);
 		x = x.copy(b);
 		for (int k = 0; k < n; k++) {
 			for (int j = 0; j < k; j++) {
@@ -83,7 +79,6 @@ public class LUDecomposition {
 	 * @return x
 	 */
 	public static Vector backwardSubstitution(Matrix u, Vector y) {
-		int n = u.getData().length;
 		Vector x = y.copy(y);
 		for (int k = n - 1; k >= 0; k--) {
 			for (int j = k + 1; j < n; j++) {
@@ -96,7 +91,6 @@ public class LUDecomposition {
 
 	// LU分解でxを求める
 	public static Vector solve(Matrix a, Vector b) {
-		int n = a.getData().length;
 		Vector x = new Vector(n);
 		Vector y = new Vector(n);
 		Matrix l = getL(a);
