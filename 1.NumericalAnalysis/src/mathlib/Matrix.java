@@ -712,6 +712,27 @@ public class Matrix extends LinearCondition {
 		}
 	}
 
+	public void symmetricBandForExam(double a, double d) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				switch (Math.abs(i - j)) {
+				case 0:
+					this.getData()[i][j] = a;
+					break;
+				case 1:
+					this.getData()[i][j] = d;
+					break;
+				default:
+					break;
+				}
+			}
+			if (i >= 2 && i - 2 < n) {
+				this.getData()[i][i - 2] = d;
+			}
+
+		}
+	}
+
 	public void symmetricBand(double d, double d2) {
 		this.symmetricBand(d, d2, 0);
 	}

@@ -1,4 +1,4 @@
-package problemsOf2ndPeriod;
+package midTermTestOf2ndPeriod;
 
 import mathlib.GaussSeidel;
 import mathlib.Jacobi;
@@ -7,17 +7,17 @@ import mathlib.SpectralRadius;
 import mathlib.SuccessiveOverRelaxation;
 import mathlib.Vector;
 
-public final class Trial07SOR extends SuccessiveOverRelaxation {
+public final class SOR2 extends SuccessiveOverRelaxation {
 
 	public static void main(String[] args) {
 
-		n = 5;
-		epsilon = 1e-10;
+		n = 7;
+		epsilon = 1e-08;
 		normNumber = 2.0;
-		maxIteration = (int) 1e+03;
+		maxIteration = (int) 2e+02;
 		isAbsolute = true;
 
-		double alpha = 2; // 対角成分
+		double alpha = 3; // 対角成分
 		a = new Matrix(n);
 		b = new Vector(n);
 		x0 = new Vector(n);
@@ -32,7 +32,7 @@ public final class Trial07SOR extends SuccessiveOverRelaxation {
 		System.out.printf("Iter of GaussSeidel : %d%n", GaussSeidel.getIteration());
 		System.out.printf("Iter of SOR : %d%n", SuccessiveOverRelaxation.getIteration());
 
-		SuccessiveOverRelaxation.solve().print();
+		GaussSeidel.solve().printf("x");
 
 		double rho = SpectralRadius.getSpectralRadiusByRayleigh(a.getJacobiMatrix(), x0);
 
@@ -45,7 +45,7 @@ public final class Trial07SOR extends SuccessiveOverRelaxation {
 		for (int i = 1; i < m; i++) {
 			omega = (double) i * 2.0 / m;
 			//			System.out.println(SuccessiveOverRelaxation.getIteration());
-			System.out.printf("%.2f & %d \\\\ %n ", omega, SuccessiveOverRelaxation.getIteration());
+			System.out.printf("%.2f, %d%n ", omega, SuccessiveOverRelaxation.getIteration());
 			//			System.out.printf("%d %.2f%n", SuccessiveOverRelaxation.getIteration(), omega);
 
 		}

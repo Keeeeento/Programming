@@ -2,6 +2,8 @@ package mathlib;
 
 public class GaussSeidel extends LinearCondition {
 
+	// x^{m+1} = D^{-1}(b-Ex^{m+1}-Fx^{m}) (E:下,F:上)
+
 	/**
 	 * solve
 	 * @param a 係数行列

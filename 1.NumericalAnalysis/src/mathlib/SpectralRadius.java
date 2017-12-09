@@ -51,15 +51,16 @@ public class SpectralRadius extends DefaultCondition {
 		}
 	}
 
-	public static double getSpectralRadius(Matrix a) {
-		powerMethod(a, Vector.allNumber(n, 1.0 / n));
-		return lambda;
-	}
-
-	public static double getSpectralRadius(Matrix a, Vector x0) {
-		powerMethod(a, x0);
-		return lambda;
-	}
+	// 以下未完成
+	//	public static double getSpectralRadius(Matrix a) {
+	//		powerMethod(a, Vector.allNumber(n, 1.0 / n));
+	//		return lambda;
+	//	}
+	//
+	//	public static double getSpectralRadius(Matrix a, Vector x0) {
+	//		powerMethod(a, x0);
+	//		return lambda;
+	//	}
 
 	public static int getIteration(Matrix a, Vector x0) {
 		powerMethod(a, x0);
@@ -99,6 +100,11 @@ public class SpectralRadius extends DefaultCondition {
 		return lambda;
 	}
 
+	public static double getSpectralRadiusByRayleigh(Matrix a) {
+		rayleighQuotient(a, Vector.allNumber(n, 1.0 / n));
+		return lambda;
+	}
+
 	public static int getIterationByRayleigh(Matrix a, Vector x0) {
 		rayleighQuotient(a, x0);
 		return iteration;
@@ -107,18 +113,17 @@ public class SpectralRadius extends DefaultCondition {
 	public static void main(String[] args) {
 
 		n = 5;
-		Matrix a = new Matrix(n);
-		a.symmetricBand(2.0, -1.0);
+		Matrix a = Matrix.hilbert(n);
 		Vector x0 = new Vector(n);
 		x0.allNumber(1);
 		epsilon = 1e-10;
 		maxIteration = 1000;
 
-		System.out.println(getSpectralRadius(a, x0));
+		System.out.println(getSpectralRadiusByRayleigh(a, x0));
 		System.out.println(getIteration(a, x0));
 		getEigenVector(a, x0).print("x");
 
-		System.out.println(getSpectralRadius(Matrix.symmetricBand(n, 0, 5)));
+		System.out.println(getSpectralRadiusByRayleigh(Matrix.symmetricBand(n, 0, 5)));
 	}
 
 }

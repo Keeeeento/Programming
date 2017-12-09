@@ -17,4 +17,12 @@ public class PowerMethod {
 		return lambda;
 	}
 
+	//	public static double spectral_radious(double [][] a) { // スペクトル半径()
+	//		int  n =a.length;
+	//		double lambda = 0.0;
+	//		double [] x = new double[n];
+	//		double [] x_old = new double[n];
+	//
+	//	}
+
 }

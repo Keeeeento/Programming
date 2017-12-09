@@ -7,6 +7,24 @@ import mathlib.Vector;
 public final class Trial06PowerMethod extends SpectralRadius {
 	public static void main(String[] args) {
 
+		/*
+		 * 冪乗法を用いて，絶対値最大の固有値をもとめよ．
+		 * x0 = {1,1,…,1}
+		 * epsilon = 1e-8
+		 * 最大反復回数 N=2000
+		 * 
+		 * A = {
+		 * 0,1/a,1/a,0
+		 * 1/a,0,1/a,1/a
+		 * 1/a,1/a,0,1/a
+		 * 0,1/a,1/a,0
+		 * }
+		 * 
+		 * a = 1,2,3,4;
+		 * 
+		 * 
+		 */
+
 		// 収束判定条件
 		n = 4;
 		epsilon = 1e-08;
@@ -23,4 +41,27 @@ public final class Trial06PowerMethod extends SpectralRadius {
 		}
 
 	}
+
+	public double[][] d(double[][] a) {
+		int n = a.length;
+		double[][] d = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			d[i][i] = a[i][i];
+		}
+		return d;
+	}
+
+	public double[][] l(double[][] a) {
+		int n = a.length;
+		double[][] l = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i < j) {
+					l[i][j] = a[i][j];
+				}
+			}
+		}
+		return a;
+	}
+
 }

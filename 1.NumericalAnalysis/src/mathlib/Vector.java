@@ -56,7 +56,7 @@ public class Vector extends LinearCondition {
 	// 指数表記
 	public void printf() {
 		for (int i = 0; i < n; i++) {
-			System.out.printf("%.10e ", this.data[i]);
+			System.out.printf("%.3e ", this.data[i]);
 		}
 		System.out.println();
 		System.out.println();

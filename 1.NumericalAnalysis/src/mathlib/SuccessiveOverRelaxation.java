@@ -1,7 +1,12 @@
 package mathlib;
 
 public class SuccessiveOverRelaxation extends LinearCondition {
-
+	/*
+	 * x^{m+1} = (D + ωE)^{-1}[(1-ω)D - ωF]x^{m} + ω(D + ωE)^{-1}b (E:下,F:上)
+	 *
+	 * xTilde = D^{-1}(b - Ex^{m+1} - Fx^{m})
+	 * x^{m+1} = x^{m} + ω(xTilde - x^{m})
+	 * */
 	/**
 	 * 緩和係数
 	 */
@@ -121,18 +126,24 @@ public class SuccessiveOverRelaxation extends LinearCondition {
 
 	/**
 	 * 最適なω
-	 * @param a
-	 * @return
+	 * @return 2/(1 + √(1-ρ(Jacobi)^2))
 	 */
 	public static double getOptOmega() {
-		double rho = SpectralRadius.getSpectralRadius(Jacobi.getJacobiMatrix());
+		double rho = SpectralRadius.getSpectralRadiusByRayleigh(Jacobi.getJacobiMatrix());
 		return 2.0 / (1.0 + Math.sqrt(1.0 - Math.pow(rho, 2.0)));
 	}
 
 	public static void main(String[] args) {
+
+		epsilon = 1e-10;
+		normNumber = 2.0;
+		maxIteration = (int) 1e+03;
+		isAbsolute = true;
+
 		n = 3;
 		a = new Matrix(new double[][] { { 3, 2, 1 }, { 1, 3, -2 }, { 2, -1, 4 } });
 		x0 = Vector.allNumber(n, 1);
+		maxIteration = 500;
 
 		b = new Vector(new double[] { 4, 6, -3 });
 		SuccessiveOverRelaxation.solve().printTeX("x");

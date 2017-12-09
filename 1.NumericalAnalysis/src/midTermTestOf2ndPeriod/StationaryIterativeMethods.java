@@ -1,4 +1,4 @@
-package problemsOf2ndPeriod;
+package midTermTestOf2ndPeriod;
 
 import mathlib.GaussSeidel;
 import mathlib.Jacobi;
@@ -7,20 +7,9 @@ import mathlib.SuccessiveOverRelaxation;
 import mathlib.Vector;
 import texlib.TeX;
 
-public final class Trial05 extends SuccessiveOverRelaxation {
+public class StationaryIterativeMethods extends SuccessiveOverRelaxation {
 
 	public static void main(String[] args) {
-
-		/*
-		 * Ax = b
-		 * A = {
-		 * a,-1,0,…,0
-		 * -1,a,-1,…,0
-		 * …
-		 * 0,…,0,-1,a
-		 * }
-		 * 
-		 */
 
 		n = 10;
 
@@ -66,9 +55,7 @@ public final class Trial05 extends SuccessiveOverRelaxation {
 			printTable(alpha, iteration, x1);
 		}
 		TeX.endTable();
-
 		TeX.endDocument();
-
 	}
 
 	public static void printTable(int alpha, int iteration, double x1) {
@@ -78,5 +65,4 @@ public final class Trial05 extends SuccessiveOverRelaxation {
 			System.out.printf("         $%d$ & $%d$ & $%.5e$ \\\\ \n", alpha, iteration, x1);
 		}
 	}
-
 }

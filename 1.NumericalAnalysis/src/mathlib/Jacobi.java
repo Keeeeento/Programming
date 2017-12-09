@@ -2,6 +2,8 @@ package mathlib;
 
 public class Jacobi extends LinearCondition {
 
+	// x^{m+1} = -D^{-1}(E+F)x^{m} + D^{-1}b (E:下,F:上)
+
 	/**solve
 	 * @param a 係数行列
 	 * @param b 定数項ベクトル

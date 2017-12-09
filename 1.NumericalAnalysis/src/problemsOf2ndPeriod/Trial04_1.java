@@ -1,6 +1,6 @@
 package problemsOf2ndPeriod;
 
-import mathlib.CholeskyDecomposition;
+import mathlib.OldCholeskyDecomposition;
 import mathlib.Matrix;
 
 public class Trial04_1 {
@@ -12,6 +12,6 @@ public class Trial04_1 {
 		};
 		Matrix a = new Matrix(aData);
 
-		CholeskyDecomposition.getL(a).printInt("L");
+		OldCholeskyDecomposition.getL(a).printInt("L");
 	}
 }

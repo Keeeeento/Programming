@@ -1,6 +1,6 @@
 package mathlib;
 
-public class CholeskyDecomposition extends LinearCondition {
+public class OldCholeskyDecomposition {
 
 	// 下三角行列を取得
 	public static Matrix getL(Matrix a) {
@@ -53,7 +53,6 @@ public class CholeskyDecomposition extends LinearCondition {
 			throw new RuntimeException("Matrix is not symmetric");
 		}
 		Matrix l = getLBySum(a);
-
 		Vector y = LUDecomposition.forwardSubstitution(l, b);
 		Vector x = LUDecomposition.backwardSubstitution(l.transpose(), y);
 		return x;

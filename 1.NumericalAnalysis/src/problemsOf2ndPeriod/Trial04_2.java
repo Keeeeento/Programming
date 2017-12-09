@@ -1,6 +1,6 @@
 package problemsOf2ndPeriod;
 
-import mathlib.CholeskyDecomposition;
+import mathlib.OldCholeskyDecomposition;
 import mathlib.Matrix;
 import mathlib.Vector;
 
@@ -16,10 +16,10 @@ public final class Trial04_2 {
 		};
 		Matrix a = new Matrix(aData);
 		int n = a.getN();
-		Matrix l = CholeskyDecomposition.getL(a);
+		Matrix l = OldCholeskyDecomposition.getL(a);
 		Vector b = Vector.allNumber(n, 1.0);
 
-		Vector x = CholeskyDecomposition.solve(a, b);
+		Vector x = OldCholeskyDecomposition.solve(a, b);
 		System.out.println("(1)");
 		l.printTeXInt("L_2");
 		System.out.println("(2)");

@@ -79,11 +79,16 @@ public class TeX {
 				"\\newcommand{\\minus}{\\raisebox{.4\\height}{\\scalebox{.8}{-}}}\r\n" +
 				"\\title{演習課題$5$ \\\\ 連立一次方程式の反復法}\r\n" +
 				"\\author{1416078 \\ 中村 謙斗}\r\n" +
-				"\\date{}" +
+				"\\date{}\r\n" +
 				"\\begin{document}" + "\r\n" + "\\maketitle");
 	}
 
 	public static void endDocument() {
 		System.out.println("\\end{document}");
+	}
+
+	public static void main(String[] args) {
+		beginDocument();
+		endDocument();
 	}
 }
