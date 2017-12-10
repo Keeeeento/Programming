@@ -10,7 +10,7 @@ public class Hilbert2 {
 		a.hilbertPlus1();
 
 		// 1
-		double cond = a.getInfinityConditionNumber();
+		double cond = a.getConditionNumber(0);
 		System.out.println("cond = " + cond);
 
 		// 2

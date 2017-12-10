@@ -208,4 +208,13 @@ public class Calc {
 		}
 		return norm;
 	}
+
+	public static double[] copy(double[] x) {
+		int n = x.length;
+		double[] copy = new double[n];
+		for (int i = 0; i < n; i++) {
+			copy[i] = x[i];
+		}
+		return copy;
+	}
 }

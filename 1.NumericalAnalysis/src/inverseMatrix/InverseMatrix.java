@@ -23,7 +23,6 @@ public class InverseMatrix {
 		for (int n = 4; n <= 12; n += 4) {
 			System.out.println("n = " + n + " のとき");
 			double[][] a = new double[n][n];
-			double[] x = new double[n];
 			double[] b = new double[n];
 			double[] bDelta = new double[n];
 
@@ -34,10 +33,10 @@ public class InverseMatrix {
 			}
 			// (1)
 			double cond = Calculation.infinityNorm(a) * Calculation.infinityNorm(Calculation.Inverse(a));
-			System.out.printf("κ∞(A) = %.10e\n", cond);
+			System.out.printf("κ∞(A) = %.3e\n", cond);
 
 			// (2)
-			Calculation.allNumber(x, 1);
+			double[] x = Calculation.allNumber(n, 1);
 			b = Calculation.multiple(a, x);
 			bDelta[0] = 1e-03 * b[0];
 			double[] b1 = Calculation.add(b, bDelta);
@@ -46,8 +45,8 @@ public class InverseMatrix {
 			double residualNorm = Calculation.infinityNorm(Calculation.sub(b1, Calculation.multiple(a, x1)));
 			double errorNorm = Calculation.infinityNorm(Calculation.sub(x, x1));
 
-			System.out.printf("residualNorm = %.10e \n", residualNorm);
-			System.out.printf("errorNorm = %.10e \n", errorNorm);
+			System.out.printf("residualNorm = %.3e \n", residualNorm);
+			System.out.printf("errorNorm = %.3e \n", errorNorm);
 			System.out.println();
 
 		}

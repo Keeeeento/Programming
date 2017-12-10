@@ -31,13 +31,18 @@ public class GaussianEliminationByMatrix {
 
 		// 4
 		Vector bDelta = new Vector(n);
-		bDelta.getData()[0] = 1e-3 * b.getData()[0];
+		bDelta.getData()[0] = 1e-3 * bAsterisk.getData()[0];
 		Vector b1 = b.add(bAsterisk, bDelta);
 		Vector x1 = a.gaussianElimination(a, b1);
 		x1.printf("x1");
 
+		bAsterisk.print("bAsterisk");
+		bDelta.print("bDelta");
+		b1.print("b1");
+
 		// 5
-		System.out.printf("bNorm = %.3e\n", bDelta.getInfinityNorm() / bAsterisk.getInfinityNorm());
+		double bNorm = bDelta.getInfinityNorm() / bAsterisk.getInfinityNorm();
+		System.out.printf("bNorm = %.3e\n", bNorm);
 		System.out.printf("error = %.3e\n", x1.getRelativeErrorOfInfinityNorm(xAsterisk));
 
 	}

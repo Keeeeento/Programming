@@ -131,6 +131,12 @@ public class Calculation {
 	// 指数表記
 	public static void printe(double[] x, int n) {
 		switch (n) {
+		case 2:
+			for (int i = 0; i < x.length; i++) {
+				System.out.printf("%.2e ", x[i]);
+			}
+			System.out.println();
+			break;
 		case 3:
 			for (int i = 0; i < x.length; i++) {
 				System.out.printf("%.3e ", x[i]);
@@ -364,10 +370,12 @@ public class Calculation {
 	}
 
 	// ベクトルの要素をすべてnに
-	public static void allNumber(double[] b, double n) {
-		for (int i = 0; i < b.length; i++) {
-			b[i] = n;
+	public static double[] allNumber(int n, double num) {
+		double[] x = new double[n];
+		for (int i = 0; i < n; i++) {
+			x[i] = num;
 		}
+		return x;
 	}
 
 	// 2つのベクトルの加算
@@ -433,12 +441,14 @@ public class Calculation {
 	// 行列の演算
 	// 行列のc倍
 	public static double[][] scalarMultiple(double c, double a[][]) {
-		for (int i = 0; i < a.length; i++) {
-			for (int j = 0; j < a[0].length; j++) {
-				a[i][j] *= c;
+		int n = a.length;
+		double[][] b = copy(a);
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				b[i][j] *= c;
 			}
 		}
-		return a;
+		return b;
 	}
 
 	// 行列の転置
@@ -478,6 +488,15 @@ public class Calculation {
 			}
 		}
 
+	}
+
+	// 行列の条件数
+	public static double oneConditionNumber(double[][] a) {
+		return manhattanNorm(a) * manhattanNorm(Inverse(a));
+	}
+
+	public static double infinityConditionNumber(double[][] a) {
+		return infinityNorm(a) * infinityNorm(Inverse(a));
 	}
 
 	// LU分解でのL
@@ -587,6 +606,11 @@ public class Calculation {
 
 	// 行列ノルム
 	// 1ノルム
+	public static double manhattanNorm(double[][] a) {
+		return infinityNorm(transpose(a));
+	}
+
+	// 無限大ノルム
 	public static double infinityNorm(double[][] a) {
 		double norm = 0.0;
 		double sum = 0.0;
@@ -602,11 +626,6 @@ public class Calculation {
 		return norm;
 	}
 
-	// 無限大ノルム
-	public static double manhattanNorm(double[][] a) {
-		return infinityNorm(transpose(a));
-	}
-
 	// ガウス消去法
 	// 前進消去
 	public static void forwardElimination(double[][] a, double[] b) {
@@ -620,6 +639,21 @@ public class Calculation {
 					if (i > j) {
 						a[i][j] = 0.0;
 					}
+				}
+				b[i] -= alpha * b[k];
+			}
+		}
+	}
+
+	// 前進消去(0とみなす)
+	public static void forwardEliminationNonZero(double[][] a, double[] b) {
+		int n = a.length;
+		double alpha = 0.0;
+		for (int k = 0; k < n - 1; k++) {
+			for (int i = k + 1; i < n; i++) {
+				alpha = a[i][k] / a[k][k];
+				for (int j = k + 1; j < n; j++) {
+					a[i][j] -= alpha * a[k][j];
 				}
 				b[i] -= alpha * b[k];
 			}
@@ -665,26 +699,10 @@ public class Calculation {
 				b[i] -= alpha * b[k];
 			}
 
-
 		}
 		// 後退代入過程
 		backwardSubstitution(a, b);
 		return b;
-	}
-
-	// 前進消去(0とみなす)
-	public static void forwardEliminationNonZero(double[][] a, double[] b) {
-		int n = a.length;
-		double alpha = 0.0;
-		for (int k = 0; k < n - 1; k++) {
-			for (int i = k + 1; i < n; i++) {
-				alpha = a[i][k] / a[k][k];
-				for (int j = k + 1; j < n; j++) {
-					a[i][j] -= alpha * a[k][j];
-				}
-				b[i] -= alpha * b[k];
-			}
-		}
 	}
 
 	// 前進代入
