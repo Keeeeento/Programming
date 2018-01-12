@@ -302,17 +302,17 @@ public class Vector extends LinearCondition {
 
 	/**
 	 * 残差ノルム
-	 * @param is_absolute
-	 * @param norm_number
+	 * @param isAbsolute
+	 * @param normNumber
 	 * @param a
 	 * @param b
 	 * @return
 	 */
-	public double getResidual(boolean is_absolute, double norm_number, Matrix a, Vector b) {
-		if (is_absolute == true) {
-			return getAbsoluteResidual(norm_number, a, b);
-		} else if (is_absolute == false) {
-			return getRelativeResidual(norm_number, a, b);
+	public double getResidual(boolean isAbsolute, double normNumber, Matrix a, Vector b) {
+		if (isAbsolute == true) {
+			return getAbsoluteResidual(normNumber, a, b);
+		} else if (isAbsolute == false) {
+			return getRelativeResidual(normNumber, a, b);
 		} else {
 			return 0;
 		}
